@@ -832,7 +832,7 @@ window.addEventListener('DOMContentLoaded', () => { try { initUserSelect(); } ca
       inputRegistry[id] = { type, elements };
     }
 
-    function getInputValue(id) {
+    function baseGetInputValue(id) {
       const entry = inputRegistry[id];
       if (!entry) return null;
 
@@ -877,15 +877,13 @@ let DERIVATION_RULES = { flags: [] };// { flags: [...] }
 
 const derivedRegistry = Object.create(null);
 
-// Preserve the base implementation
-const __baseGetInputValue = getInputValue;
-
-// Override getInputValue so enabled_by rules can reference D_* flags
+// Base input reader captured above as baseGetInputValue()
+// Wrapper getInputValue allows rules to reference D_* flags.
 function getInputValue(id) {
   if (Object.prototype.hasOwnProperty.call(derivedRegistry, id)) {
     return derivedRegistry[id];
   }
-  return __baseGetInputValue(id);
+  return baseGetInputValue(id);
 }
 
 function setDerivedFlag(id, truthy) {
@@ -893,7 +891,7 @@ function setDerivedFlag(id, truthy) {
 }
 
 function parseIcaosFromLocations() {
-  const raw = __baseGetInputValue("Q_LOCATIONS") || "";
+  const raw = baseGetInputValue("Q_LOCATIONS") || "";
   return String(raw)
     .toUpperCase()
     .split(/[\s,;\n]+/g)
