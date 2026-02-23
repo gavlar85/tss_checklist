@@ -863,6 +863,118 @@ window.addEventListener('DOMContentLoaded', () => { try { initUserSelect(); } ca
       return null;
     }
 
+
+
+/* ==========================================================
+   GENERIC DERIVATION ENGINE (DATA-DRIVEN)
+   - Loads airports + derivations rules from JSON files
+   - Exposes derived flags as virtual question IDs (e.g. D_HAS_UK, D_HAS_GAR)
+   - Returns "Yes"/"No" strings for compatibility with the rule parser
+   ========================================================== */
+
+let AIRPORT_DB = {};                 // ICAO -> { country, tags, ... }
+let DERIVATION_RULES = { flags: [] };// { flags: [...] }
+
+const derivedRegistry = Object.create(null);
+
+// Preserve the base implementation
+const __baseGetInputValue = getInputValue;
+
+// Override getInputValue so enabled_by rules can reference D_* flags
+function getInputValue(id) {
+  if (Object.prototype.hasOwnProperty.call(derivedRegistry, id)) {
+    return derivedRegistry[id];
+  }
+  return __baseGetInputValue(id);
+}
+
+function setDerivedFlag(id, truthy) {
+  derivedRegistry[id] = truthy ? "Yes" : "No";
+}
+
+function parseIcaosFromLocations() {
+  const raw = __baseGetInputValue("Q_LOCATIONS") || "";
+  return String(raw)
+    .toUpperCase()
+    .split(/[\s,;\n]+/g)
+    .map(t => t.trim())
+    .filter(t => /^[A-Z]{4}$/.test(t));
+}
+
+function getAirportRecord(icao) {
+  return AIRPORT_DB && AIRPORT_DB[icao] ? AIRPORT_DB[icao] : null;
+}
+
+function airportHasTag(airport, tag) {
+  const tags = airport && Array.isArray(airport.tags) ? airport.tags : [];
+  return tags.includes(tag);
+}
+
+function testCondition(cond, airport) {
+  if (!cond || !airport) return false;
+
+  if (cond.airportHasTag) {
+    return airportHasTag(airport, String(cond.airportHasTag));
+  }
+
+  if (cond.airportField && Object.prototype.hasOwnProperty.call(cond, "equals")) {
+    const field = String(cond.airportField);
+    const expected = String(cond.equals);
+    const actual = airport[field];
+    return String(actual ?? "") === expected;
+  }
+
+  return false;
+}
+
+function evaluateFlagRule(flagRule, airports) {
+  if (!flagRule) return false;
+
+  if (Array.isArray(flagRule.any) && flagRule.any.length) {
+    return airports.some(ap => flagRule.any.some(c => testCondition(c, ap)));
+  }
+
+  if (Array.isArray(flagRule.all) && flagRule.all.length) {
+    return flagRule.all.every(c => airports.some(ap => testCondition(c, ap)));
+  }
+
+  return false;
+}
+
+function updateDerivedFlagsFromItinerary() {
+  const icaos = parseIcaosFromLocations();
+  const airports = icaos.map(getAirportRecord).filter(Boolean);
+
+  const flags = (DERIVATION_RULES && Array.isArray(DERIVATION_RULES.flags)) ? DERIVATION_RULES.flags : [];
+  flags.forEach(f => {
+    if (!f || !f.id) return;
+    const truthy = evaluateFlagRule(f, airports);
+    setDerivedFlag(String(f.id), truthy);
+  });
+}
+
+async function initDerivationEngine() {
+  try {
+    const [airportsRes, rulesRes] = await Promise.all([
+      fetch("./data/airports.json", { cache: "no-cache" }),
+      fetch("./data/derivations.json", { cache: "no-cache" })
+    ]);
+
+    if (!airportsRes.ok) throw new Error("Failed to load ./data/airports.json");
+    if (!rulesRes.ok) throw new Error("Failed to load ./data/derivations.json");
+
+    AIRPORT_DB = await airportsRes.json();
+    DERIVATION_RULES = await rulesRes.json();
+
+    updateDerivedFlagsFromItinerary();
+  } catch (err) {
+    console.warn("Derivation engine init failed:", err);
+    // Fail safe: ensure common flags default to "No"
+    setDerivedFlag("D_HAS_UK", false);
+    setDerivedFlag("D_HAS_GAR", false);
+  }
+}
+
     /* DEPENDENCY LOGIC */
 
     function evaluateRuleString(rule) {
@@ -2218,6 +2330,7 @@ async function handleEmailSummaryClick() {
         const el = entry.elements;
 
         const handler = () => {
+          updateDerivedFlagsFromItinerary();
           evaluateVisibility();
         };
     // Force Registration field to uppercase
@@ -2244,8 +2357,12 @@ async function handleEmailSummaryClick() {
     buildRootQuestions();
     buildSections();
     wireInputListeners();
-    evaluateVisibility();
 
+    // Load airport data + derivation rules, then compute derived flags before first visibility pass
+    initDerivationEngine().then(() => {
+      updateDerivedFlagsFromItinerary();
+      evaluateVisibility();
+    });
 const emailBtn = document.getElementById("emailSummaryBtn");
 if (emailBtn) {
   emailBtn.addEventListener("click", handleEmailSummaryClick);
