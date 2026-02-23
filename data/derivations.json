@@ -3,15 +3,15 @@
     {
       "id": "D_HAS_UK",
       "any": [
-        { "field": "country", "equals": "GB" },
-        { "tag": "UK" }
+        { "airportField": "country", "equals": "GB" },
+        { "airportHasTag": "UK" }
       ]
     },
     {
       "id": "D_HAS_GAR",
       "any": [
-        { "tag": "GAR" },
-        { "field": "country", "equals": "GB" }
+        { "airportHasTag": "GAR" },
+        { "airportField": "country", "equals": "GB" }
       ]
     }
   ]
