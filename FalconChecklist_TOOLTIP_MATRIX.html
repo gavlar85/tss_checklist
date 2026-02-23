@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trip Checklist</title>
+
+<style>
+/* ==========================================================
+   BASE STYLES
+   ========================================================== */
+
+body {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 14px;
+  margin: 20px;
+}
+
+h1 { margin-bottom: 6px; }
+
+.userbar{display:flex;align-items:center;gap:10px;margin:0 0 14px 0;flex-wrap:wrap;}
+.userbar select{padding:6px 10px;border-radius:6px;}
+
+.completedbybar{display:flex;align-items:center;gap:10px;margin:0 0 14px 0;flex-wrap:wrap;}
+.completedbybar input{padding:6px 10px;border-radius:6px;min-width:260px;border:1px solid #aaa;}
+
+
+/* Put Mission ID, Registration, and Action on the same line */
+.root-questions .question-row.inline-root {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* spacing between items */
+}
+
+.root-questions .question-row.inline-root label {
+  margin-bottom: 0;
+}
+
+.root-questions .question-row.inline-root .question-inputs {
+  display: flex;
+  align-items: center;
+}
+
+/* Root questions box */
+.root-questions {
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f9f9f9;
+}
+.root-questions .question-row { margin-bottom: 12px; }
+.root-questions label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+.root-questions input[type="text"],
+.root-questions select {
+  padding: 5px;
+  min-width: 260px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+}
+
+/* Sections */
+section.checklist-section {
+  margin-top: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  display: block;
+  background: #fff;
+}
+
+.section-title {
+  background-color: #004BA0;
+  color: white;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.section-title::after {
+  content: "▾";
+  font-size: 10px;
+  margin-left: 8px;
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+section.collapsed .section-title::after {
+  transform: rotate(90deg);
+}
+
+/* Fade + Slide animation (S3) */
+.section-content {
+  padding: 10px 15px;
+  border-top: 1px solid #ccc;
+  background: #fff;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition: max-height 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+section.expanded .section-content {
+  max-height: 2000px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+ul.question-list { 
+  margin: 0; padding-left: 0; list-style-type: none;
+}
+.question-item { margin-bottom: 10px; }
+.question-label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.question-inputs label { margin-right: 10px; }
+.question-inputs input[type="text"],
+.question-inputs select {
+  padding: 4px 6px;
+  min-width: 220px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+}
+
+
+/* ICAO Matrix (Q_LOCATIONS) */
+.icao-matrix {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(56px, 1fr));
+  gap: 6px;
+  max-width: 420px;
+}
+.icao-matrix input[type="text"]{
+  min-width: 0;
+  width: 100%;
+  padding: 6px 6px;
+  text-transform: uppercase;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.icao-matrix .icao-slot {
+  position: relative;
+}
+.icao-matrix .icao-slot::after{
+  content: attr(data-slot);
+  position: absolute;
+  top: -10px;
+  right: 4px;
+  font-size: 10px;
+  opacity: 0.45;
+  pointer-events: none;
+}
+/* Blue bullet before every question label */
+.question-label::before {
+  content: "●";
+  color: #004BA0;   /* same blue as section bar */
+  font-size: 10px;
+  margin-right: 6px;
+  position: relative;
+  top: -1px;        /* slight vertical alignment tweak */
+}
+
+
+/* ==========================================================
+   DARK MODE
+   ========================================================== */
+
+body.dark-mode {
+  background: #121212;
+  color: #e6e6e6;
+}
+
+body.dark-mode .root-questions {
+  background: #1e1e1e; border-color: #444;
+}
+body.dark-mode .root-questions label { color: #e6e6e6; }
+body.dark-mode .root-questions input[type="text"],
+body.dark-mode .root-questions select {
+  background: #222; color: #09aef0; border: 1px solid #09aef0;
+}
+
+body.dark-mode section.checklist-section {
+  background: #1a1a1a; border-color: #333;
+}
+
+body.dark-mode .section-title {
+  background-color: #1f2a3d;
+  color: #fff;
+}
+
+body.dark-mode .section-content {
+  background: #1a1a1a; border-top: 1px solid #333;
+}
+
+body.dark-mode .question-label { color: #e6e6e6; }
+
+body.dark-mode .completedbybar input{background:#222;color:#fff;border:1px solid #666;}
+
+/* DARK MODE – DISABLED (RETRIEVED STATE) */
+body.dark-mode input:disabled,
+body.dark-mode select:disabled,
+body.dark-mode textarea:disabled{
+  background:#222;
+  color:#fff;
+  opacity:1;
+  -webkit-text-fill-color:#fff;
+  border:1px solid #666;
+}
+
+body.dark-mode .question-inputs input[type="text"],
+body.dark-mode .question-inputs select {
+  background: #222; color: #fff; border: 1px solid #666;
+}
+
+
+
+
+/* ==========================================================
+   FLOATING BUTTONS (TOP RIGHT)
+   ========================================================== */
+
+.floating-buttons {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 99999;
+}
+
+.floating-buttons button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  background: #004BA0;
+  color: white;
+  transition: 0.2s ease;
+}
+
+/* ==========================================================
+   RETRIEVE POPOVER (TOP RIGHT)
+   ========================================================== */
+.retrieve-popover{
+  position: fixed;
+  top: 62px;
+  right: 20px;
+  background: #222;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  z-index: 99999;
+  width: 360px;
+}
+.retrieve-popover .retrieve-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.retrieve-popover input{
+  flex:1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  outline: none;
+}
+.retrieve-popover button{
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  background: #00a35b;
+  color: white;
+}
+
+
+/* =========================
+   CHECK / MISSING ANSWER UI
+   ========================= */
+.missing-answer {
+  outline: 2px solid #ff5252;
+  outline-offset: 2px;
+  background: rgba(255, 82, 82, 0.08);
+  border-radius: 8px;
+}
+
+#checkBtn.completed {
+  background: #2e7d32 !important;
+  color: #e0e0e0 !important;
+  opacity: 0.65;
+  cursor: default !important;
+}
+
+
+/* ==========================================================
+   RIGHT-HAND TOOLS DRAWER (POC)
+   ========================================================== */
+
+.tools-drawer-toggle{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  background: #004BA0;
+  color: white;
+}
+
+.tools-drawer-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 99998;
+}
+
+.tools-drawer{
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 420px;
+  max-width: 92vw;
+  background: #ffffff;
+  border-left: 1px solid #ccc;
+  box-shadow: -10px 0 24px rgba(0,0,0,0.2);
+  transform: translateX(100%);
+  transition: transform 0.22s ease;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+}
+
+.tools-drawer.open{
+  transform: translateX(0);
+}
+
+.tools-drawer-header{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 12px 12px 10px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tools-drawer-title{
+  font-weight: 800;
+  color: #004BA0;
+  letter-spacing: 0.2px;
+}
+
+.tools-drawer-close{
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.tools-drawer-actions{
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Match your existing button look */
+.tools-drawer-actions button{
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  background: #004BA0;
+  color: white;
+  transition: 0.2s ease;
+}
+
+/* In-drawer retrieve popover override */
+.tools-drawer .retrieve-popover{
+  position: relative;          /* was fixed */
+  top: auto;
+  right: auto;
+  width: 100%;
+  margin-top: 6px;
+  border-radius: 10px;
+}
+
+.tools-drawer-divider{
+  height: 1px;
+  background: #e6e6e6;
+  margin: 0 12px;
+}
+
+.tools-drawer-toolslot{
+  padding: 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0; /* so iframe can flex */
+}
+
+.tools-drawer-toolslot-title{
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.tools-iframe{
+  width: 100%;
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* Dark mode compatibility for the drawer */
+body.dark-mode .tools-drawer{
+  background: #1a1a1a;
+  border-left: 1px solid #333;
+}
+body.dark-mode .tools-drawer-header{
+  border-bottom: 1px solid #333;
+}
+body.dark-mode .tools-drawer-close{
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+}
+body.dark-mode .tools-drawer-divider{
+  background: #333;
+}
+body.dark-mode .tools-iframe{
+  border: 1px solid #444;
+  background: #121212;
+}
+
+
+/* ==========================================================
+   TOOLS LAUNCHER (SCALABLE TOOL PICKER)
+   ========================================================== */
+.tools-launcher{
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tools-launcher-label{
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.tools-launcher-row{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.tools-launcher-select{
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-weight: 600;
+}
+
+.tools-launcher-load{
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  background: #004BA0;
+  color: #fff;
+}
+
+body.dark-mode .tools-launcher-select{
+  background: #121212;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+
+/* ==========================================================
+   SUBSECTIONS (inside a section)
+   ========================================================== */
+.subsection-item{
+  margin: 14px 0 8px 0;
+  padding: 10px 10px;
+  border-left: 4px solid #004BA0;
+  background: rgba(0, 75, 160, 0.06);
+  border-radius: 8px;
+}
+
+.subsection-title{
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin: 0;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+}
+
+.subsection-title::after{
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(0,0,0,0.12);
+  margin-left: 10px;
+}
+
+/* Dark mode */
+body.dark-mode .subsection-item{
+  background: rgba(9, 174, 240, 0.10);
+  border-left-color: #09aef0;
+}
+body.dark-mode .subsection-title::after{
+  background: rgba(255,255,255,0.18);
+}
+
+
+
+/* ==========================================================
+   TOOLTIPS (per-question help text)
+   Define tooltip text in config.js as: tooltip: "..."
+   ========================================================== */
+.tooltip-wrap{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  cursor: help;
+}
+
+.tooltip-icon{
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1;
+  border: 1px solid rgba(0,0,0,0.25);
+  user-select: none;
+}
+
+body.dark-mode .tooltip-icon{
+  border-color: rgba(255,255,255,0.25);
+}
+
+.tooltip-bubble{
+  position: absolute;
+  left: 0;
+  top: 24px;
+  min-width: 240px;
+  max-width: 360px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #fff;
+  color: #111;
+  font-size: 12.5px;
+  line-height: 1.35;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+  white-space: normal;
+}
+
+body.dark-mode .tooltip-bubble{
+  background: #0f1720;
+  color: #e9eef5;
+  border-color: rgba(255,255,255,0.12);
+}
+
+.tooltip-wrap:hover .tooltip-bubble,
+.tooltip-wrap:focus-within .tooltip-bubble{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tooltip-icon:focus{
+  outline: 2px solid rgba(9, 174, 240, 0.55);
+  outline-offset: 2px;
+}
+</style>
+</head>
+
+<body>
+<div class="userbar" id="userBar">
+  <label for="userSelect"><strong>User:</strong></label>
+  <select id="userSelect" title="Select your name"></select>
+</div>
+
+<div class="completedbybar" id="completedByBar" style="display:none;">
+  <label for="completedBy"><strong>Completed by:</strong></label>
+  <input id="completedBy" type="text" value="" readonly placeholder="(populated when Retrieve is used)" />
+</div>
+
+<!-- Containers -->
+<div class="root-questions" id="rootQuestions"></div>
+<div id="checklistSections"></div>
+
+<!-- Right-side tools drawer (replaces floating buttons) -->
+<button id="toolsDrawerToggle" class="tools-drawer-toggle" aria-expanded="false" aria-controls="toolsDrawer">
+  ☰ Tools
+</button>
+
+<aside id="toolsDrawer" class="tools-drawer" aria-hidden="true">
+  <div class="tools-drawer-header">
+    <div class="tools-drawer-title">Checklist Tools</div>
+    <button id="toolsDrawerClose" class="tools-drawer-close" title="Close">✕</button>
+  </div>
+
+  <div class="tools-drawer-actions">
+    <!-- Keep existing IDs so your JS listeners continue to work -->
+    <button id="darkModeToggle">Dark Mode</button>
+    <button id="checkBtn">Check</button>
+    <button id="emailSummaryBtn" disabled>Email Summary</button>
+    <button id="retrieveBtn">Retrieve</button>
+    <button id="resetBtn">Reset</button>
+
+
+    <!-- Retrieve popover now sits inside the drawer -->
+    <div id="retrievePopover" class="retrieve-popover" style="display:none;">
+      <div class="retrieve-row">
+        <input id="retrieveCodeInput" type="text" placeholder="Paste retrieve code…" />
+        <button id="retrieveApplyBtn" title="Load">&#10003;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tools-drawer-divider"></div>
+
+  <div class="tools-launcher">
+    <label class="tools-launcher-label" for="toolPicker">Helper tools</label>
+    <div class="tools-launcher-row">
+      <select id="toolPicker" class="tools-launcher-select">
+        <!-- populated by JS -->
+      </select>
+      <button id="toolLoadBtn" class="tools-launcher-load">Load</button>
+    </div>
+  </div>
+
+
+  <!-- Tool slot: load small HTML tools here -->
+  <div class="tools-drawer-toolslot">
+    <div class="tools-drawer-toolslot-title">Tool Panel</div>
+    <iframe
+      id="toolsIframe"
+      class="tools-iframe"
+      src="about:blank"
+      title="Tools panel"
+    ></iframe>
+  </div>
+</aside>
+
+<!-- Optional backdrop for click-off-to-close -->
+<div id="toolsDrawerBackdrop" class="tools-drawer-backdrop" style="display:none;"></div>
+</div>
+
+<script src="checklistus3rs.js"></script>
+<script src="falconchecklistconfig.js"></script>
+<script>
+/* ==========================================================
+   CHECKLIST CONFIG STARTS HERE
+   ========================================================== */
+const checklistConfig = window.checklistConfig;
+
+// Init user dropdown + greeting
+window.addEventListener('DOMContentLoaded', () => { try { initUserSelect(); } catch(e){} });
+
+    /* REGISTRIES */
+    const inputRegistry = {};
+    const questionRegistry = [];
+    const sectionRegistry = [];
+    let previousSectionStates = [];
+    let shouldOpenMailAfterPrint = false;
+
+    /* ==========================================================
+       USER IDENTITY (LOCAL) — via checklistusers.js
+       ========================================================== */
+    const USER_STORAGE_KEY = "eocChecklistUserV1";
+    let currentUser = null; // { fullName, role }
+    let isChecklistLocked = false;
+    let _lastLockAlertAt = 0;
+
+    function safeFirstName(fullName){
+      const s = String(fullName || "").trim();
+      if (!s) return "";
+      return s.split(/\s+/)[0];
+    }
+
+    function loadCurrentUserFromStorage(){
+      try {
+        const raw = localStorage.getItem(USER_STORAGE_KEY);
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (obj && typeof obj.fullName === "string") return obj;
+      } catch(e){}
+      return null;
+    }
+
+    function saveCurrentUserToStorage(u){
+      try { localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(u)); } catch(e){}
+    }
+
+    function setTitleGreeting(){ /* title removed */ }
+
+    function setTitleCompletedBy(fullName){
+  const el = document.getElementById("completedBy");
+  if (!el) return;
+  el.value = String(fullName || "").trim();
+}
+
+    function initUserSelect(){
+      const select = document.getElementById("userSelect");      if (!select) return;
+
+      const users = Array.isArray(window.CHECKLIST_USERS) ? window.CHECKLIST_USERS : [];
+      // Build options
+      select.innerHTML = "";
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Select your name…";
+      select.appendChild(placeholder);
+
+      users.forEach(u => {
+        if (!u || !u.fullName) return;
+        const opt = document.createElement("option");
+        opt.value = u.fullName;
+        opt.textContent = u.fullName;
+        select.appendChild(opt);
+      });
+
+      // Restore selection
+      currentUser = loadCurrentUserFromStorage();
+      if (currentUser?.fullName) {
+        select.value = currentUser.fullName;      } else {      }
+      setTitleGreeting();
+
+      select.addEventListener("change", () => {
+        const fullName = select.value || "";
+        const chosen = users.find(u => u && u.fullName === fullName) || null;
+        if (chosen) {
+          currentUser = { fullName: chosen.fullName, role: chosen.role || "user" };
+          saveCurrentUserToStorage(currentUser);
+          roleEl.textContent = currentUser.role ? `(${currentUser.role})` : "";
+        } else {
+          currentUser = null;
+          try { localStorage.removeItem(USER_STORAGE_KEY); } catch(e){}
+          roleEl.textContent = "";
+        }
+        if (!isChecklistLocked) setTitleGreeting();
+      });
+    }
+
+    function lockChecklist(){
+      isChecklistLocked = true;
+
+      // Disable all registered inputs
+      Object.values(inputRegistry).forEach(info => {
+        if (!info) return;
+        const elems = Array.isArray(info.elements) ? info.elements : [];
+        elems.forEach(el => {
+          try { el.disabled = true; } catch(e){}
+        });
+      });
+
+      // Also disable any stray inputs that weren't registered (belt + braces)
+      document.querySelectorAll("#rootQuestions input, #rootQuestions select, #rootQuestions textarea, #checklistSections input, #checklistSections select, #checklistSections textarea")
+        .forEach(el => { try { el.disabled = true; } catch(e){} });
+
+      // Intercept interaction attempts to show popup
+      const handler = (ev) => {
+        if (!isChecklistLocked) return;
+        const target = ev.target;
+        if (!target) return;
+
+        // Allow reset button clicks
+        if (target.closest && target.closest("#resetBtn")) return;
+
+        // If the click is on a disabled input, browsers sometimes don't fire events on it.
+        // So we also catch clicks on labels/containers within the checklist areas.
+        const inChecklist = target.closest && (target.closest("#rootQuestions") || target.closest("#checklistSections"));
+        if (!inChecklist) return;
+
+        const now = Date.now();
+        if (now - _lastLockAlertAt < 900) { ev.preventDefault(); ev.stopPropagation(); return; }
+        _lastLockAlertAt = now;
+        alert("This checklist was loaded via Retrieve and is locked. Click Reset to make changes.");
+        ev.preventDefault();
+        ev.stopPropagation();
+      };
+
+      // Capture phase to stop early
+      document.addEventListener("click", handler, true);
+      document.addEventListener("keydown", handler, true);
+    }
+
+
+    function registerInput(id, type, elements) {
+      inputRegistry[id] = { type, elements };
+    }
+
+    function getInputValue(id) {
+      const entry = inputRegistry[id];
+      if (!entry) return null;
+
+      const type = entry.type;
+      const el = entry.elements;
+
+      if (type === "text") return el.value.trim();
+      if (type === "select") return el.value;
+
+      if (type === "icao_matrix") {
+        const vals = Array.isArray(el) ? el.map(x => (x.value || "").trim().toUpperCase()).filter(Boolean) : [];
+        return vals.join(" ");
+      }
+
+      if (type === "radio") {
+        for (const r of el) if (r.checked) return r.value;
+        return null;
+      }
+
+      if (type === "checkbox") return el.checked ? "checked" : "unchecked";
+
+      if (type === "multi") {
+        const selected = [];
+        el.forEach(cb => { if (cb.checked) selected.push(cb.value); });
+        return selected;
+      }
+
+      return null;
+    }
+
+    /* DEPENDENCY LOGIC */
+
+    function evaluateRuleString(rule) {
+      if (!rule) return true;
+      const orGroups = rule.split("||").map(g => g.trim()).filter(Boolean);
+      return orGroups.some(group => evaluateAndGroup(group));
+    }
+
+    function evaluateAndGroup(group) {
+      const parts = group.split(/[;:]/).map(p => p.trim()).filter(Boolean);
+      return parts.every(expr => {
+        let op = "==";
+        let lhs, rhs;
+
+        if (expr.includes("!=")) {
+          [lhs, rhs] = expr.split("!=");
+          op = "!=";
+        } else if (expr.includes("=")) {
+          [lhs, rhs] = expr.split("=");
+          op = "==";
+        } else return true;
+
+        lhs = lhs.trim();
+        rhs = (rhs || "").trim();
+        const value = getInputValue(lhs);
+
+        if (Array.isArray(value)) {
+          if (rhs === "EMPTY") {
+            const isEmpty = value.length === 0;
+            return op === "==" ? isEmpty : !isEmpty;
+          }
+          const contains = value.includes(rhs);
+          return op === "==" ? contains : !contains;
+        }
+
+        if (rhs === "EMPTY") {
+          const isEmpty = !value;
+          return op === "==" ? isEmpty : !isEmpty;
+        }
+
+        if (value == null) return false;
+
+        return op === "==" ? String(value) === rhs : String(value) !== rhs;
+      });
+    }
+
+    /* Helper: is a question logically enabled (including its section)? */
+
+    function isQuestionEnabled(q) {
+      let enabled = true;
+
+      // Section-level enable/disable
+      if (q.sectionId) {
+        const sec = sectionRegistry.find(s => s.id === q.sectionId);
+        if (sec) {
+          let secEnabled = true;
+          if (sec.enabled_by)
+            secEnabled = secEnabled && evaluateRuleString(sec.enabled_by);
+          if (sec.disabled_by)
+            secEnabled = secEnabled && !evaluateRuleString(sec.disabled_by);
+          if (!secEnabled) enabled = false;
+        }
+      }
+
+      // Question-level
+      if (enabled && q.enabled_by)
+        enabled = enabled && evaluateRuleString(q.enabled_by);
+
+      if (enabled && q.disabled_by)
+        enabled = enabled && !evaluateRuleString(q.disabled_by);
+
+      return enabled;
+    }
+
+    /* VALIDATION — ENABLED QUESTIONS ONLY */
+
+    function allVisibleQuestionsAnswered() {
+      return questionRegistry.every(q => {
+        if (q.nonAnswerable) return true;
+        if (!isQuestionEnabled(q)) return true;
+
+        const val = getInputValue(q.id);
+
+        if (Array.isArray(val)) return val.length > 0;
+        if (val === null || val === "") return false;
+
+        return true;
+      });
+    }
+
+    
+    /* =========================
+       CHECK / HIGHLIGHT MISSING
+       ========================= */
+
+    function clearMissingHighlights() {
+      questionRegistry.forEach(q => {
+        if (q && q.element) q.element.classList.remove("missing-answer");
+      });
+    }
+
+    function highlightMissingAnswers() {
+      clearMissingHighlights();
+
+      let firstMissingEl = null;
+
+      questionRegistry.forEach(q => {
+        if (q.nonAnswerable) return;
+        if (!isQuestionEnabled(q)) return;
+
+        const val = getInputValue(q.id);
+        const missing = Array.isArray(val) ? val.length === 0 : (val === null || val === "");
+
+        if (missing) {
+          q.element.classList.add("missing-answer");
+
+          // Expand section if needed so the highlight is visible
+          if (q.sectionId) {
+            const secEl = document.querySelector(`[data-section-id="${q.sectionId}"]`);
+            if (secEl && secEl.classList.contains("collapsed")) {
+              secEl.classList.remove("collapsed");
+              secEl.classList.add("expanded");
+            }
+          }
+
+          if (!firstMissingEl) firstMissingEl = q.element;
+        }
+      });
+
+      if (firstMissingEl) {
+        firstMissingEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+function updatePrintButtonState() {
+  const emailBtn = document.getElementById("emailSummaryBtn");
+  const checkBtn = document.getElementById("checkBtn");
+
+  const complete = allVisibleQuestionsAnswered();
+
+  if (emailBtn) {
+    emailBtn.disabled = !complete;
+    emailBtn.style.opacity = complete ? "1" : "0.5";
+    emailBtn.style.cursor = complete ? "pointer" : "not-allowed";
+  }
+
+  if (checkBtn) {
+    if (complete) {
+      // Greyed-out but green, and guide the user toward Email Summary
+      checkBtn.classList.add("completed");
+      checkBtn.disabled = true;
+      checkBtn.textContent = "→";
+      clearMissingHighlights();
+    } else {
+      checkBtn.classList.remove("completed");
+      checkBtn.disabled = false;
+      checkBtn.textContent = "Check";
+    }
+  }
+}
+
+
+    /* BUILDERS */
+
+    function buildRootQuestions() {
+      const container = document.getElementById("rootQuestions");
+      container.innerHTML = "";
+
+      checklistConfig.rootQuestions.forEach(q => {
+        const row = document.createElement("div");
+row.className = "question-row";
+
+// Apply inline-row only to Mission ID, Registration, Action
+if (["Q_MISSIONID", "Q_REG", "Q_ACTION"].includes(q.id)) {
+  row.classList.add("inline-root");
+}
+
+        const label = document.createElement("label");
+        label.textContent = q.label;
+        label.setAttribute("for", q.id);
+        row.appendChild(label);
+
+        const inputsWrapper = document.createElement("div");
+        inputsWrapper.className = "question-inputs";
+
+        if (q.type === "text") {
+          const input = document.createElement("input");
+          input.type = "text";
+          inputsWrapper.appendChild(input);
+          registerInput(q.id, "text", input);
+        } else if (q.type === "select") {
+          const select = document.createElement("select");
+          const ph = document.createElement("option");
+          ph.value = "";
+          ph.textContent = "-- Select --";
+          select.appendChild(ph);
+          (q.options || []).forEach(opt => {
+            const o = document.createElement("option");
+            o.value = opt;
+            o.textContent = opt;
+            select.appendChild(o);
+          });
+          inputsWrapper.appendChild(select);
+          registerInput(q.id, "select", select);
+        } else if (q.type === "radio") {
+          const radios = [];
+          (q.options || []).forEach(opt => {
+            const lbl = document.createElement("label");
+            const r = document.createElement("input");
+            r.type = "radio";
+            r.name = q.id;
+            r.value = opt;
+            lbl.appendChild(r);
+            lbl.appendChild(document.createTextNode(" " + opt));
+            inputsWrapper.appendChild(lbl);
+            radios.push(r);
+          });
+          registerInput(q.id, "radio", radios);
+        } else if (q.type === "multi") {
+          const boxes = [];
+          (q.options || []).forEach(opt => {
+            const lbl = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.value = opt;
+            lbl.appendChild(cb);
+            lbl.appendChild(document.createTextNode(" " + opt));
+            inputsWrapper.appendChild(lbl);
+            boxes.push(cb);
+          });
+          registerInput(q.id, "multi", boxes);
+        }
+
+        row.appendChild(inputsWrapper);
+        container.appendChild(row);
+
+        questionRegistry.push({
+          id: q.id,
+          element: row,
+          sectionId: null,
+          enabled_by: q.enabled_by,
+          disabled_by: q.disabled_by
+        });
+      });
+    }
+
+    function buildSections() {
+      const container = document.getElementById("checklistSections");
+      container.innerHTML = "";
+
+      checklistConfig.sections.forEach(sec => {
+        const sectionEl = document.createElement("section");
+        sectionEl.className = "checklist-section collapsed";
+        sectionEl.dataset.sectionId = sec.id;
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "section-title";
+        titleDiv.textContent = sec.title;
+        titleDiv.addEventListener("click", () => {
+          if (sectionEl.style.display === "none") return;
+          sectionEl.classList.toggle("collapsed");
+          sectionEl.classList.toggle("expanded");
+          sectionEl.dataset.userToggled = "true";
+        });
+        sectionEl.appendChild(titleDiv);
+
+        const contentDiv = document.createElement("div");
+        contentDiv.className = "section-content";
+
+        const list = document.createElement("ul");
+        list.className = "question-list";
+
+        sec.questions.forEach(q => {
+          // ===== Subsection header (non-answer row) =====
+          if (q.type === "subsection") {
+            const li = document.createElement("li");
+            li.className = "subsection-item";
+            li.dataset.questionId = q.id;
+
+            const title = document.createElement("div");
+            title.className = "subsection-title";
+            title.textContent = q.label || "";
+            li.appendChild(title);
+
+            list.appendChild(li);
+
+            // Register for visibility rules, but mark as non-answerable (skip validation)
+            questionRegistry.push({
+              id: q.id,
+              element: li,
+              sectionId: sec.id,
+              enabled_by: q.enabled_by,
+              disabled_by: q.disabled_by,
+              nonAnswerable: true
+            });
+
+            return; // Don't fall through to normal question rendering
+          }
+
+          const li = document.createElement("li");
+          li.className = "question-item";
+          li.dataset.questionId = q.id;
+
+          const lbl = document.createElement("span");
+          lbl.className = "question-label";
+          lbl.textContent = q.label;
+          // Optional tooltip/help text (defined in config.js as `tooltip`)
+          if (q.tooltip) {
+            const tipWrap = document.createElement("span");
+            tipWrap.className = "tooltip-wrap";
+
+            const tipIcon = document.createElement("span");
+            tipIcon.className = "tooltip-icon";
+            tipIcon.textContent = "i";
+            tipIcon.tabIndex = 0; // keyboard focus
+            tipIcon.setAttribute("role", "img");
+            tipIcon.setAttribute("aria-label", "Help");
+
+            const tipBubble = document.createElement("span");
+            tipBubble.className = "tooltip-bubble";
+            tipBubble.textContent = q.tooltip;
+
+            tipWrap.appendChild(tipIcon);
+            tipWrap.appendChild(tipBubble);
+            lbl.appendChild(tipWrap);
+          }
+
+          li.appendChild(lbl);
+
+          const inputsWrapper = document.createElement("div");
+          inputsWrapper.className = "question-inputs";
+
+          if (q.id === "Q_LOCATIONS") {
+            // ICAO Matrix input (20 x 4-char boxes)
+            const grid = document.createElement("div");
+            grid.className = "icao-matrix";
+
+            const inputs = [];
+            const slots = Number(q.slots || 20);
+
+            function normalizeToken(s) {
+              return String(s || "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 4);
+            }
+
+            function syncRegistryFromGrid() {
+              const vals = inputs.map(i => normalizeToken(i.value)).filter(v => v.length === 4);
+              // store as a single string (space-separated) so existing logic continues to work
+              // and retrieval/export stays simple
+              // Note: getInputValue("Q_LOCATIONS") will also return a space-separated string.
+              // Keeping both in sync avoids surprises.
+              // (We don't set values directly here; getInputValue reads from elements.)
+              evaluateVisibility();
+              updatePrintButtonState();
+            }
+
+            for (let i = 0; i < slots; i++) {
+              const slotWrap = document.createElement("div");
+              slotWrap.className = "icao-slot";
+              slotWrap.dataset.slot = String(i + 1);
+
+              const inp = document.createElement("input");
+              inp.type = "text";
+              inp.maxLength = 4;
+              inp.autocomplete = "off";
+              inp.spellcheck = false;
+              inp.inputMode = "text";
+              inp.placeholder = "----";
+
+              inp.addEventListener("input", (e) => {
+                const v = normalizeToken(inp.value);
+                inp.value = v;
+                if (v.length === 4 && inputs[i + 1]) inputs[i + 1].focus();
+                syncRegistryFromGrid();
+              });
+
+              inp.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace" && !inp.value && inputs[i - 1]) {
+                  inputs[i - 1].focus();
+                }
+              });
+
+              inp.addEventListener("paste", (e) => {
+                const text = (e.clipboardData || window.clipboardData).getData("text");
+                if (!text) return;
+
+                const tokens = text
+                  .toUpperCase()
+                  .replace(/[^A-Z\s,;\n]/g, " ")
+                  .split(/[\s,;\n]+/g)
+                  .map(t => t.trim())
+                  .filter(Boolean);
+
+                // If it looks like multiple ICAOs, distribute them across slots
+                const multi = tokens.length > 1;
+                if (!multi) return;
+
+                e.preventDefault();
+                let ptr = i;
+                tokens.forEach(t => {
+                  const code = normalizeToken(t);
+                  if (code.length !== 4) return;
+                  if (inputs[ptr]) {
+                    inputs[ptr].value = code;
+                    ptr++;
+                  }
+                });
+                if (inputs[Math.min(ptr, inputs.length - 1)]) inputs[Math.min(ptr, inputs.length - 1)].focus();
+                syncRegistryFromGrid();
+              });
+
+              slotWrap.appendChild(inp);
+              grid.appendChild(slotWrap);
+              inputs.push(inp);
+            }
+
+            inputsWrapper.appendChild(grid);
+            registerInput(q.id, "icao_matrix", inputs);
+          } else if (q.type === "text") {
+            const input = document.createElement("input");
+            input.type = "text";
+            inputsWrapper.appendChild(input);
+            registerInput(q.id, "text", input);
+          } else if (q.type === "select") {
+            const select = document.createElement("select");
+            const ph = document.createElement("option");
+            ph.value = "";
+            ph.textContent = "-- Select --";
+            select.appendChild(ph);
+            (q.options || []).forEach(opt => {
+              const o = document.createElement("option");
+              o.value = opt;
+              o.textContent = opt;
+              select.appendChild(o);
+            });
+            inputsWrapper.appendChild(select);
+            registerInput(q.id, "select", select);
+          } else if (q.type === "radio") {
+            const radios = [];
+            (q.options || []).forEach(opt => {
+              const lbl2 = document.createElement("label");
+              const r = document.createElement("input");
+              r.type = "radio";
+              r.name = q.id;
+              r.value = opt;
+              lbl2.appendChild(r);
+              lbl2.appendChild(document.createTextNode(" " + opt));
+              inputsWrapper.appendChild(lbl2);
+              radios.push(r);
+            });
+            registerInput(q.id, "radio", radios);
+          } else if (q.type === "checkbox") {
+            const lbl2 = document.createElement("label");
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            lbl2.appendChild(cb);
+            lbl2.appendChild(document.createTextNode(" Yes"));
+            inputsWrapper.appendChild(lbl2);
+            registerInput(q.id, "checkbox", cb);
+          } else if (q.type === "multi") {
+            const boxes = [];
+            (q.options || []).forEach(opt => {
+              const lbl2 = document.createElement("label");
+              const cb = document.createElement("input");
+              cb.type = "checkbox";
+              cb.value = opt;
+              lbl2.appendChild(cb);
+              lbl2.appendChild(document.createTextNode(" " + opt));
+              inputsWrapper.appendChild(lbl2);
+              boxes.push(cb);
+            });
+            registerInput(q.id, "multi", boxes);
+          }
+
+          li.appendChild(inputsWrapper);
+          list.appendChild(li);
+
+          questionRegistry.push({
+            id: q.id,
+            element: li,
+            sectionId: sec.id,
+            enabled_by: q.enabled_by,
+            disabled_by: q.disabled_by
+          });
+        });
+
+        contentDiv.appendChild(list);
+        sectionEl.appendChild(contentDiv);
+        container.appendChild(sectionEl);
+
+        sectionRegistry.push({
+          id: sec.id,
+          element: sectionEl,
+          enabled_by: sec.enabled_by,
+          disabled_by: sec.disabled_by
+        });
+      });
+    }
+
+    /* VISIBILITY HANDLER */
+
+    function evaluateVisibility() {
+      // Question visibility (question-level rules only)
+      questionRegistry.forEach(q => {
+        let visible = true;
+
+        if (q.enabled_by)
+          visible = visible && evaluateRuleString(q.enabled_by);
+
+        if (q.disabled_by)
+          visible = visible && !evaluateRuleString(q.disabled_by);
+
+        q.element.style.display = visible ? "" : "none";
+      });
+
+      // Section visibility
+      sectionRegistry.forEach(sec => {
+        const el = sec.element;
+
+        let enabled = true;
+        if (sec.enabled_by)
+          enabled = enabled && evaluateRuleString(sec.enabled_by);
+        if (sec.disabled_by)
+          enabled = enabled && !evaluateRuleString(sec.disabled_by);
+
+        if (!enabled) {
+          el.style.display = "none";
+          return;
+        }
+
+        const visibleQuestions = questionRegistry.filter(
+          q => q.sectionId === sec.id && q.element.style.display !== "none"
+        );
+
+        el.style.display = visibleQuestions.length ? "block" : "none";
+
+        if (!el.dataset.userToggled) {
+          el.classList.remove("collapsed");
+          el.classList.add("expanded");
+        }
+      });
+
+      updatePrintButtonState();
+    }
+
+    /* PRINT + OUTLOOK EMAIL */
+
+    function expandAllSectionsForPrint() {
+      previousSectionStates = [];
+      sectionRegistry.forEach(sec => {
+        const el = sec.element;
+        previousSectionStates.push({
+          element: el,
+          className: el.className,
+          display: el.style.display
+        });
+        if (el.style.display !== "none") {
+          el.classList.remove("collapsed");
+          el.classList.add("expanded");
+        }
+      });
+    }
+
+    function restoreSectionsAfterPrint() {
+      previousSectionStates.forEach(state => {
+        state.element.className = state.className;
+        state.element.style.display = state.display;
+      });
+      previousSectionStates = [];
+    }
+
+    function openOutlookEmail() {
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, "0");
+      const month = now.toLocaleString("en-GB", { month: "short" }).toUpperCase(); // e.g. NOV
+      const hours = String(now.getHours()).padStart(2, "0");
+      const mins = String(now.getMinutes()).padStart(2, "0");
+
+      const dateStr = day + month;         // DDMMM
+      const timeStr = `${hours}:${mins}`;  // HH:MM
+
+      const subject = `Checklist Completed - ${dateStr} - ${timeStr}`;
+      const mailtoUrl = `mailto:eoc@common.univ-wea.com?subject=${encodeURIComponent(subject)}`;
+
+      window.location.href = mailtoUrl;
+    }
+
+    function handlePrintButtonClick() {
+      if (!allVisibleQuestionsAnswered()) return;
+      expandAllSectionsForPrint();
+      shouldOpenMailAfterPrint = true;
+      window.print();
+    }
+
+    window.onafterprint = () => {
+      restoreSectionsAfterPrint();
+      if (shouldOpenMailAfterPrint) {
+        shouldOpenMailAfterPrint = false;
+        openOutlookEmail();
+      }
+    };
+
+    
+/* ==========================================================
+   SHARE / RETRIEVE CODE (NO SERVER)
+   - Generates a base64url retrieve code containing current answers
+   - Backward compatible loader supports v1 (object) and v2 (array)
+   - v2 payloads are optionally compressed with LZ-String before base64url
+   ========================================================== */
+
+/* LZ-String (lz-string) — client-side compression (MIT License)
+   https://pieroxy.net/blog/pages/lz-string/index.html
+   Minimal embedded build: UTF16 compression only (compressToUTF16 / decompressFromUTF16) */
+/* eslint-disable */
+var LZString = (function() {
+
+  var f = String.fromCharCode;
+  var keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+  var baseReverseDic = {};
+
+  function getBaseValue(alphabet, character) {
+    if (!baseReverseDic[alphabet]) {
+      baseReverseDic[alphabet] = {};
+      for (var i = 0; i < alphabet.length; i++) {
+        baseReverseDic[alphabet][alphabet.charAt(i)] = i;
+      }
+    }
+    return baseReverseDic[alphabet][character];
+  }
+
+  function _compress(uncompressed, bitsPerChar, getCharFromInt) {
+    if (uncompressed == null) return "";
+    var i, value;
+    var context_dictionary = {};
+    var context_dictionaryToCreate = {};
+    var context_c = "";
+    var context_wc = "";
+    var context_w = "";
+    var context_enlargeIn = 2; // Compensate for the first entry which should not count
+    var context_dictSize = 3;
+    var context_numBits = 2;
+    var context_data = [];
+    var context_data_val = 0;
+    var context_data_position = 0;
+
+    for (ii = 0; ii < uncompressed.length; ii += 1) {
+      context_c = uncompressed.charAt(ii);
+      if (!Object.prototype.hasOwnProperty.call(context_dictionary, context_c)) {
+        context_dictionary[context_c] = context_dictSize++;
+        context_dictionaryToCreate[context_c] = true;
+      }
+
+      context_wc = context_w + context_c;
+      if (Object.prototype.hasOwnProperty.call(context_dictionary, context_wc)) {
+        context_w = context_wc;
+      } else {
+        if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate, context_w)) {
+          if (context_w.charCodeAt(0) < 256) {
+            for (i = 0; i < context_numBits; i++) {
+              context_data_val = (context_data_val << 1);
+              if (context_data_position == bitsPerChar - 1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+            }
+            value = context_w.charCodeAt(0);
+            for (i = 0; i < 8; i++) {
+              context_data_val = (context_data_val << 1) | (value & 1);
+              if (context_data_position == bitsPerChar - 1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+              value = value >> 1;
+            }
+          } else {
+            value = 1;
+            for (i = 0; i < context_numBits; i++) {
+              context_data_val = (context_data_val << 1) | value;
+              if (context_data_position == bitsPerChar - 1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+              value = 0;
+            }
+            value = context_w.charCodeAt(0);
+            for (i = 0; i < 16; i++) {
+              context_data_val = (context_data_val << 1) | (value & 1);
+              if (context_data_position == bitsPerChar - 1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+              value = value >> 1;
+            }
+          }
+          context_enlargeIn--;
+          if (context_enlargeIn == 0) {
+            context_enlargeIn = Math.pow(2, context_numBits);
+            context_numBits++;
+          }
+          delete context_dictionaryToCreate[context_w];
+        } else {
+          value = context_dictionary[context_w];
+          for (i = 0; i < context_numBits; i++) {
+            context_data_val = (context_data_val << 1) | (value & 1);
+            if (context_data_position == bitsPerChar - 1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = value >> 1;
+          }
+        }
+        context_enlargeIn--;
+        if (context_enlargeIn == 0) {
+          context_enlargeIn = Math.pow(2, context_numBits);
+          context_numBits++;
+        }
+        context_dictionary[context_wc] = context_dictSize++;
+        context_w = String(context_c);
+      }
+    }
+
+    if (context_w !== "") {
+      if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate, context_w)) {
+        if (context_w.charCodeAt(0) < 256) {
+          for (i = 0; i < context_numBits; i++) {
+            context_data_val = (context_data_val << 1);
+            if (context_data_position == bitsPerChar - 1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+          }
+          value = context_w.charCodeAt(0);
+          for (i = 0; i < 8; i++) {
+            context_data_val = (context_data_val << 1) | (value & 1);
+            if (context_data_position == bitsPerChar - 1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = value >> 1;
+          }
+        } else {
+          value = 1;
+          for (i = 0; i < context_numBits; i++) {
+            context_data_val = (context_data_val << 1) | value;
+            if (context_data_position == bitsPerChar - 1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = 0;
+          }
+          value = context_w.charCodeAt(0);
+          for (i = 0; i < 16; i++) {
+            context_data_val = (context_data_val << 1) | (value & 1);
+            if (context_data_position == bitsPerChar - 1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = value >> 1;
+          }
+        }
+        context_enlargeIn--;
+        if (context_enlargeIn == 0) {
+          context_enlargeIn = Math.pow(2, context_numBits);
+          context_numBits++;
+        }
+        delete context_dictionaryToCreate[context_w];
+      } else {
+        value = context_dictionary[context_w];
+        for (i = 0; i < context_numBits; i++) {
+          context_data_val = (context_data_val << 1) | (value & 1);
+          if (context_data_position == bitsPerChar - 1) {
+            context_data_position = 0;
+            context_data.push(getCharFromInt(context_data_val));
+            context_data_val = 0;
+          } else {
+            context_data_position++;
+          }
+          value = value >> 1;
+        }
+      }
+      context_enlargeIn--;
+      if (context_enlargeIn == 0) {
+        context_enlargeIn = Math.pow(2, context_numBits);
+        context_numBits++;
+      }
+    }
+
+    value = 2;
+    for (i = 0; i < context_numBits; i++) {
+      context_data_val = (context_data_val << 1) | (value & 1);
+      if (context_data_position == bitsPerChar - 1) {
+        context_data_position = 0;
+        context_data.push(getCharFromInt(context_data_val));
+        context_data_val = 0;
+      } else {
+        context_data_position++;
+      }
+      value = value >> 1;
+    }
+
+    while (true) {
+      context_data_val = (context_data_val << 1);
+      if (context_data_position == bitsPerChar - 1) {
+        context_data.push(getCharFromInt(context_data_val));
+        break;
+      } else context_data_position++;
+    }
+
+    return context_data.join("");
+  }
+
+  function _decompress(length, resetValue, getNextValue) {
+    var dictionary = [];
+    var next;
+    var enlargeIn = 4;
+    var dictSize = 4;
+    var numBits = 3;
+    var entry = "";
+    var result = [];
+    var i;
+    var w;
+    var bits, resb, maxpower, power;
+    var c;
+    var data = { val: getNextValue(0), position: resetValue, index: 1 };
+
+    for (i = 0; i < 3; i += 1) {
+      dictionary[i] = i;
+    }
+
+    bits = 0;
+    maxpower = Math.pow(2, 2);
+    power = 1;
+    while (power != maxpower) {
+      resb = data.val & data.position;
+      data.position >>= 1;
+      if (data.position == 0) {
+        data.position = resetValue;
+        data.val = getNextValue(data.index++);
+      }
+      bits |= (resb > 0 ? 1 : 0) * power;
+      power <<= 1;
+    }
+
+    switch (next = bits) {
+      case 0:
+        bits = 0;
+        maxpower = Math.pow(2, 8);
+        power = 1;
+        while (power != maxpower) {
+          resb = data.val & data.position;
+          data.position >>= 1;
+          if (data.position == 0) {
+            data.position = resetValue;
+            data.val = getNextValue(data.index++);
+          }
+          bits |= (resb > 0 ? 1 : 0) * power;
+          power <<= 1;
+        }
+        c = f(bits);
+        break;
+      case 1:
+        bits = 0;
+        maxpower = Math.pow(2, 16);
+        power = 1;
+        while (power != maxpower) {
+          resb = data.val & data.position;
+          data.position >>= 1;
+          if (data.position == 0) {
+            data.position = resetValue;
+            data.val = getNextValue(data.index++);
+          }
+          bits |= (resb > 0 ? 1 : 0) * power;
+          power <<= 1;
+        }
+        c = f(bits);
+        break;
+      case 2:
+        return "";
+    }
+
+    dictionary[3] = c;
+    w = c;
+    result.push(c);
+
+    while (true) {
+      if (data.index > length) {
+        return "";
+      }
+
+      bits = 0;
+      maxpower = Math.pow(2, numBits);
+      power = 1;
+      while (power != maxpower) {
+        resb = data.val & data.position;
+        data.position >>= 1;
+        if (data.position == 0) {
+          data.position = resetValue;
+          data.val = getNextValue(data.index++);
+        }
+        bits |= (resb > 0 ? 1 : 0) * power;
+        power <<= 1;
+      }
+
+      switch (c = bits) {
+        case 0:
+          bits = 0;
+          maxpower = Math.pow(2, 8);
+          power = 1;
+          while (power != maxpower) {
+            resb = data.val & data.position;
+            data.position >>= 1;
+            if (data.position == 0) {
+              data.position = resetValue;
+              data.val = getNextValue(data.index++);
+            }
+            bits |= (resb > 0 ? 1 : 0) * power;
+            power <<= 1;
+          }
+          dictionary[dictSize++] = f(bits);
+          c = dictSize - 1;
+          enlargeIn--;
+          break;
+        case 1:
+          bits = 0;
+          maxpower = Math.pow(2, 16);
+          power = 1;
+          while (power != maxpower) {
+            resb = data.val & data.position;
+            data.position >>= 1;
+            if (data.position == 0) {
+              data.position = resetValue;
+              data.val = getNextValue(data.index++);
+            }
+            bits |= (resb > 0 ? 1 : 0) * power;
+            power <<= 1;
+          }
+          dictionary[dictSize++] = f(bits);
+          c = dictSize - 1;
+          enlargeIn--;
+          break;
+        case 2:
+          return result.join("");
+      }
+
+      if (enlargeIn == 0) {
+        enlargeIn = Math.pow(2, numBits);
+        numBits++;
+      }
+
+      if (dictionary[c]) {
+        entry = dictionary[c];
+      } else {
+        if (c === dictSize) {
+          entry = w + w.charAt(0);
+        } else {
+          return null;
+        }
+      }
+      result.push(entry);
+
+      dictionary[dictSize++] = w + entry.charAt(0);
+      enlargeIn--;
+
+      w = entry;
+
+      if (enlargeIn == 0) {
+        enlargeIn = Math.pow(2, numBits);
+        numBits++;
+      }
+    }
+  }
+
+  return {
+    compressToUTF16: function(input) {
+      if (input == null) return "";
+      return _compress(input, 15, function(a) { return f(a + 32); }) + " ";
+    },
+    decompressFromUTF16: function(compressed) {
+      if (compressed == null) return "";
+      if (compressed === "") return null;
+      return _decompress(compressed.length, 16384, function(index) {
+        return compressed.charCodeAt(index) - 32;
+      });
+    },
+    _compress: _compress,
+    _decompress: _decompress
+  };
+})();
+/* eslint-enable */
+
+/* ==========================================================
+   DETERMINISTIC QUESTION ID ORDER (v2 ARRAY MAPPING)
+   - IMPORTANT: This order must be stable for encode/decode
+   ========================================================== */
+
+function buildDeterministicQuestionIdList() {
+  const ids = [];
+
+  // Root questions (in config order)
+  (checklistConfig.rootQuestions || []).forEach(q => ids.push(q.id));
+
+  // Section questions (section order + question order)
+  (checklistConfig.sections || []).forEach(sec => {
+    (sec.questions || []).forEach(q => ids.push(q.id));
+  });
+
+  // Safety: de-dupe while preserving first-seen order (shouldn't happen, but prevents surprises)
+  const seen = new Set();
+  const ordered = [];
+  ids.forEach(id => {
+    if (!id || seen.has(id)) return;
+    seen.add(id);
+    ordered.push(id);
+  });
+
+  return ordered;
+}
+
+const __QUESTION_ID_LIST_V2 = buildDeterministicQuestionIdList();
+const __QUESTION_ID_INDEX_V2 = (() => {
+  const m = {};
+  __QUESTION_ID_LIST_V2.forEach((id, idx) => { m[id] = idx; });
+  return m;
+})();
+
+/* ==========================================================
+   v1 SERIALIZATION (OBJECT MAP) — KEEP EXISTING BEHAVIOR
+   ========================================================== */
+function serializeAnswersV1() {
+  const state = {};
+  Object.keys(inputRegistry).forEach(id => {
+    const v = getInputValue(id);
+    if (v === null) return;
+    if (typeof v === "string" && v.trim() === "") return;
+    if (Array.isArray(v) && v.length === 0) return;
+    state[id] = v;
+  });
+  return state;
+}
+
+/* ==========================================================
+   v2 SERIALIZATION (ARRAY) — COMPACT, ORDERED
+   ========================================================== */
+function serializeAnswersV2() {
+  const arr = new Array(__QUESTION_ID_LIST_V2.length).fill(null);
+
+  __QUESTION_ID_LIST_V2.forEach((id, idx) => {
+    const entry = inputRegistry[id];
+    const v = getInputValue(id);
+
+    // Match v1 "skip empty" behavior for types that can be blank
+    // NOTE: checkbox always had a value in v1 ("checked"/"unchecked"), so we preserve that here.
+    if (v === null) { arr[idx] = null; return; }
+
+    if (entry && entry.type !== "checkbox") {
+      if (typeof v === "string" && v.trim() === "") { arr[idx] = null; return; }
+      if (Array.isArray(v) && v.length === 0) { arr[idx] = null; return; }
+    }
+
+    arr[idx] = v;
+  });
+
+  // Trim trailing nulls to shrink payload further
+  while (arr.length && arr[arr.length - 1] === null) arr.pop();
+
+  return arr;
+}
+
+/* ==========================================================
+   BASE64URL HELPERS (unchanged)
+   ========================================================== */
+function base64UrlEncode(str) {
+  const b64 = btoa(unescape(encodeURIComponent(str)));
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function base64UrlDecode(b64url) {
+  let b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
+  while (b64.length % 4) b64 += "=";
+  const str = decodeURIComponent(escape(atob(b64)));
+  return str;
+}
+
+/* ==========================================================
+   v2 ENCODING (SERIALIZATION + OPTIONAL COMPRESSION)
+   ========================================================== */
+function encodePayloadToRetrieveCode(payloadObj) {
+  // ---- SERIALIZATION (JSON) ----
+  const jsonStr = JSON.stringify(payloadObj);
+
+  // ---- OPTIONAL COMPRESSION (LZ-String) ----
+  // v2 codes are compressed by default to shorten codes as the checklist grows.
+  const compressed = LZString.compressToUTF16(jsonStr);
+
+  // ---- BASE64URL ENCODING ----
+  return base64UrlEncode(compressed);
+}
+
+/* ==========================================================
+   v1 ENCODING (KEEP EXACT LEGACY FORMAT)
+   ========================================================== */
+function encodePayloadToRetrieveCodeV1(payloadObj) {
+  // ---- SERIALIZATION (JSON) ----
+  const jsonStr = JSON.stringify(payloadObj);
+
+  // ---- BASE64URL ENCODING (NO COMPRESSION IN v1) ----
+  return base64UrlEncode(jsonStr);
+}
+
+/* ==========================================================
+   GENERATE RETRIEVE CODE
+   - Default: v2 (array + compression)
+   - Back-compat loader still accepts v1 codes
+   ========================================================== */
+function generateShareCode() {
+  // ---- v2 PAYLOAD ----
+  const payloadV2 = {
+    v: 2,
+    ts: Date.now(),
+    by: (currentUser && currentUser.fullName) ? currentUser.fullName : null,
+    byRole: (currentUser && currentUser.role) ? currentUser.role : null,
+    answers: serializeAnswersV2()
+  };
+
+  return encodePayloadToRetrieveCode(payloadV2);
+}
+
+/* ==========================================================
+   DESERIALIZATION (LOAD) — v1 vs v2 DETECTION
+   ========================================================== */
+function decodeRetrieveCodeToPayload(code) {
+  const trimmed = (code || "").trim();
+  if (!trimmed) return null;
+
+  let decoded;
+  try {
+    decoded = base64UrlDecode(trimmed);
+  } catch (e) {
+    return null;
+  }
+
+  // First try: treat decoded as compressed UTF16 (v2 default)
+  // If it isn't compressed, LZString returns null; then we fall back to raw JSON.
+  let jsonStr = null;
+
+  try {
+    const maybeJson = LZString.decompressFromUTF16(decoded);
+    if (maybeJson && (maybeJson[0] === "{" || maybeJson[0] === "[")) {
+      jsonStr = maybeJson;
+    }
+  } catch (e) {
+    // ignore and fall back
+  }
+
+  if (jsonStr == null) {
+    // Fallback: decoded is plain JSON (v1 legacy, or uncompressed v2)
+    jsonStr = decoded;
+  }
+
+  try {
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    return null;
+  }
+}
+
+function setInputValue(id, value) {
+  const entry = inputRegistry[id];
+  if (!entry) return;
+
+  const type = entry.type;
+  const el = entry.elements;
+
+  if (type === "text") {
+    el.value = (value ?? "");
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    return;
+  }
+
+  if (type === "select") {
+    el.value = (value ?? "");
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    return;
+  }
+
+  if (type === "radio") {
+    el.forEach(r => { r.checked = (r.value === value); });
+    // trigger one change event (on first radio)
+    if (el[0]) el[0].dispatchEvent(new Event("change", { bubbles: true }));
+    return;
+  }
+
+  if (type === "multi") {
+    const wanted = Array.isArray(value) ? value : [];
+    el.forEach(cb => { cb.checked = wanted.includes(cb.value); });
+    if (el[0]) el[0].dispatchEvent(new Event("change", { bubbles: true }));
+    return;
+  }
+
+  if (type === "icao_matrix") {
+    const tokens = Array.isArray(value)
+      ? value
+      : String(value ?? "").toUpperCase().split(/[\s,;\n]+/g).map(t => t.trim()).filter(Boolean);
+    const clean = tokens.filter(t => /^[A-Z]{4}$/.test(t));
+    const inputs = Array.isArray(el) ? el : [];
+    inputs.forEach((inp, idx) => { inp.value = clean[idx] || ""; });
+    if (inputs[0]) inputs[0].dispatchEvent(new Event("input", { bubbles: true }));
+    return;
+  }
+
+  if (type === "checkbox") {
+    el.checked = (value === "checked" || value === true);
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    return;
+  }
+}
+
+function clearAllAnswers() {
+  Object.keys(inputRegistry).forEach(id => {
+    const entry = inputRegistry[id];
+    if (!entry) return;
+    if (entry.type === "text" || entry.type === "select") {
+      entry.elements.value = "";
+    } else if (entry.type === "radio") {
+      entry.elements.forEach(r => r.checked = false);
+    } else if (entry.type === "multi") {
+      entry.elements.forEach(cb => cb.checked = false);
+    } else if (entry.type === "icao_matrix") {
+      (entry.elements || []).forEach(inp => inp.value = "");
+    } else if (entry.type === "checkbox") {
+      entry.elements.checked = false;
+    }
+  });
+}
+
+function loadFromShareCode(code) {
+  const payload = decodeRetrieveCodeToPayload(code);
+  if (!payload) return false;
+
+  // Optional: clear first so removed answers don't linger
+  clearAllAnswers();
+
+  // ---- v2 LOGIC (ARRAY) ----
+  if (payload.v === 2 && Array.isArray(payload.answers)) {
+    for (let i = 0; i < payload.answers.length; i++) {
+      const id = __QUESTION_ID_LIST_V2[i];
+      if (!id) continue;
+      const val = payload.answers[i];
+      if (val === null || typeof val === "undefined") continue; // null means "not stored"
+      setInputValue(id, val);
+    }
+
+    evaluateVisibility();
+
+    // Title + lock
+    if (payload && payload.by) setTitleCompletedBy(payload.by);
+    const cbb = document.getElementById('completedByBar'); if (cbb) cbb.style.display = 'flex';
+    lockChecklist();
+    return true;
+  }
+
+  // ---- v1 LOGIC (OBJECT MAP) — DO NOT REMOVE OR BREAK ----
+  // Accept missing v (legacy) or v === 1
+  if ((!payload.v || payload.v === 1) && payload.answers && typeof payload.answers === "object" && !Array.isArray(payload.answers)) {
+    Object.entries(payload.answers).forEach(([id, val]) => setInputValue(id, val));
+
+    evaluateVisibility();
+
+    // Title + lock (v1)
+    if (payload && payload.by) setTitleCompletedBy(payload.by);
+    const cbb = document.getElementById('completedByBar'); if (cbb) cbb.style.display = 'flex';
+    lockChecklist();
+    return true;
+  }
+
+  return false;
+}
+
+/* ==========================================================
+   OPEN OUTLOOK EMAIL (SUBJECT ONLY — BODY WILL BE PASTED)
+   ========================================================== */
+
+function openBlankOutlookEmail(bodyText) {
+const now = new Date();
+const d = String(now.getDate()).padStart(2, "0");
+const m = now.toLocaleString("en-GB", { month: "short" }).toUpperCase();
+const h = String(now.getHours()).padStart(2, "0");
+const min = String(now.getMinutes()).padStart(2, "0");
+
+
+const dateStr = `${d}${m}`;
+const timeStr = `${h}${min}`;
+
+
+const mission = getInputValue("Q_MISSIONID") || "UNKNOWN";
+const reg = getInputValue("Q_REG") || "NOREG";
+
+
+const subject = `Mission ID ${mission} // ${reg} // Checklist Completed - ${dateStr} - ${timeStr}`;
+
+
+const body = (bodyText ?? "");
+window.location.href = `mailto:eoc@common.univ-wea.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+/* ==========================================================
+   EMAIL SUMMARY BUTTON HANDLER
+   ========================================================== */
+
+async function handleEmailSummaryClick() {
+  if (!allVisibleQuestionsAnswered()) return;
+
+  // Generate a share/retrieve code containing the current selections.
+  // The code is placed directly into the email body so the user can just click Send.
+  const code = generateShareCode();
+
+  openBlankOutlookEmail(code);
+}
+
+
+    /* EVENT WIRING */
+
+    function wireInputListeners() {
+      Object.values(inputRegistry).forEach(entry => {
+        const t = entry.type;
+        const el = entry.elements;
+
+        const handler = () => {
+          evaluateVisibility();
+        };
+    // Force Registration field to uppercase
+        const regInput = inputRegistry["Q_REG"].elements;
+        regInput.style.textTransform = "uppercase";
+        regInput.addEventListener("input", () => {
+        regInput.value = regInput.value.toUpperCase();
+      });
+
+        if (t === "icao_matrix") {
+          (el || []).forEach(e => e.addEventListener("input", handler));
+        } else         if (t === "radio" || t === "multi") {
+          el.forEach(e => e.addEventListener("change", handler));
+        } else if (t === "checkbox" || t === "select") {
+          el.addEventListener("change", handler);
+        } else if (t === "text") {
+          el.addEventListener("input", handler);
+        }
+      });
+    }
+
+    /* INIT */
+
+    buildRootQuestions();
+    buildSections();
+    wireInputListeners();
+    evaluateVisibility();
+
+const emailBtn = document.getElementById("emailSummaryBtn");
+if (emailBtn) {
+  emailBtn.addEventListener("click", handleEmailSummaryClick);
+}
+
+const checkBtn = document.getElementById("checkBtn");
+if (checkBtn) {
+  checkBtn.addEventListener("click", () => {
+    // Highlight any enabled questions without answers
+    highlightMissingAnswers();
+  });
+}
+
+    /* ===================== DARK MODE ENGINE ===================== */
+
+
+const darkToggle = document.getElementById("darkModeToggle");
+
+// Load saved preference
+if (localStorage.getItem("darkMode") === "true") {
+  document.body.classList.add("dark-mode");
+  darkToggle.textContent = "Light Mode";
+}
+
+darkToggle.addEventListener("click", () => {
+  const enabled = document.body.classList.toggle("dark-mode");
+  localStorage.setItem("darkMode", enabled);
+  darkToggle.textContent = enabled ? "Light Mode" : "Dark Mode";
+});
+
+
+/* ==========================================================
+   RESET BUTTON
+   ========================================================== */
+const resetBtn = document.getElementById("resetBtn");
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    const ok = confirm("Reset the checklist? This will clear all entries on the page.");
+    if (!ok) return;
+
+    // Keep saved preferences (e.g., dark mode) but clear the form state.
+    window.location.reload();
+  });
+}
+
+/* ==========================================================
+   RETRIEVE UI WIRING
+   ========================================================== */
+const retrieveBtn = document.getElementById("retrieveBtn");
+const retrievePopover = document.getElementById("retrievePopover");
+const retrieveCodeInput = document.getElementById("retrieveCodeInput");
+const retrieveApplyBtn = document.getElementById("retrieveApplyBtn");
+
+retrieveBtn.addEventListener("click", () => {
+  const isHidden = retrievePopover.style.display === "none" || retrievePopover.style.display === "";
+  retrievePopover.style.display = isHidden ? "block" : "none";
+  if (isHidden) setTimeout(() => retrieveCodeInput.focus(), 50);
+});
+
+retrieveApplyBtn.addEventListener("click", () => {
+  const ok = loadFromShareCode(retrieveCodeInput.value);
+  if (!ok) {
+    alert("That code doesn't look valid. Please paste the full code and try again.");
+    return;
+  }
+  retrievePopover.style.display = "none";
+  retrieveCodeInput.value = "";
+});
+
+</script>
+
+
+<script>
+
+/* ==========================================================
+   TOOLS DRAWER (POC) — UI ONLY, DOES NOT TOUCH CHECKLIST LOGIC
+   ========================================================== */
+(function(){
+  const drawer = document.getElementById("toolsDrawer");
+  const toggle = document.getElementById("toolsDrawerToggle");
+  const closeBtn = document.getElementById("toolsDrawerClose");
+  const backdrop = document.getElementById("toolsDrawerBackdrop");
+  const retrievePopover = document.getElementById("retrievePopover");
+
+  if (!drawer || !toggle || !closeBtn || !backdrop) return;
+
+  function setOpen(open){
+    drawer.classList.toggle("open", open);
+    drawer.setAttribute("aria-hidden", String(!open));
+    toggle.setAttribute("aria-expanded", String(open));
+    backdrop.style.display = open ? "block" : "none";
+
+    // If closing, also hide the retrieve UI so it doesn't get "lost"
+    if (!open) {
+    if (retrievePopover) retrievePopover.style.display = "none";
+
+    // Reset tool iframe when drawer closes
+    const iframe = document.getElementById("toolsIframe");
+    if (iframe) iframe.src = "about:blank";
+  }
+  }
+
+  toggle.addEventListener("click", () => {
+    const isOpen = drawer.classList.contains("open");
+    setOpen(!isOpen);
+  });
+
+  closeBtn.addEventListener("click", () => setOpen(false));
+  backdrop.addEventListener("click", () => setOpen(false));
+
+  // ESC to close
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && drawer.classList.contains("open")) setOpen(false);
+  });
+})();
+
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const iframe = document.getElementById("toolsIframe");
+  const picker = document.getElementById("toolPicker");
+  const loadBtn = document.getElementById("toolLoadBtn");
+
+  if (!iframe || !picker || !loadBtn) return;
+
+  // Add tools here as you grow (files in the same folder as this checklist HTML)
+  const helperTools = [
+    { label: "— Select a tool —", src: "about:blank" },
+    { label: "Dassault Payload Helper", src: "DassaultHelper.html" }
+    // { label: "APIS Builder", src: "ApisHelper.html" },
+    // { label: "Crew/Pax Weight Converter", src: "WeightHelper.html" },
+  ];
+
+  // Populate dropdown
+  picker.innerHTML = "";
+  helperTools.forEach((t) => {
+    const opt = document.createElement("option");
+    opt.value = t.src;
+    opt.textContent = t.label;
+    picker.appendChild(opt);
+  });
+
+  function loadSelectedTool(){
+    const src = picker.value || "about:blank";
+    iframe.src = src;
+  }
+
+  loadBtn.addEventListener("click", loadSelectedTool);
+  picker.addEventListener("change", loadSelectedTool);
+});
+</script>
+</body>
+</html>
