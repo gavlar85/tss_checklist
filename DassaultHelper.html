@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Flight Planning Comment Builder</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 16px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 18px; margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 8px; align-items: center; }
+    .hdr { font-weight: 600; opacity: .85; }
+    label { font-size: 13px; opacity: .9; }
+    input[type="number"] { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid rgba(127,127,127,.35); border-radius: 8px; }
+    .row { padding: 10px 0; border-bottom: 1px solid rgba(127,127,127,.2); }
+    .tot { font-weight: 700; }
+    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(127,127,127,.15); font-size: 13px; }
+    textarea { width: 100%; min-height: 160px; padding: 10px; border-radius: 10px; border: 1px solid rgba(127,127,127,.35); box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    button { padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(127,127,127,.35); background: rgba(127,127,127,.12); cursor: pointer; }
+    button:hover { filter: brightness(1.05); }
+    .note { font-size: 12px; opacity: .8; margin-top: 8px; }
+    .footer { display:flex; justify-content: space-between; align-items:center; gap: 12px; margin-top: 10px; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>Flight Planning System — Comment Builder</h1>
+
+    <div class="grid hdr" aria-hidden="true" style="margin-bottom:6px;">
+      <div>Category</div>
+      <div>Count</div>
+      <div>Weight (lbs)</div>
+      <div>Line Total (lbs)</div>
+    </div>
+
+    <div class="row grid">
+      <label>Males</label>
+      <input id="mCount" type="number" min="0" step="1" value="4" inputmode="numeric" />
+      <input id="mWgt" type="number" min="0" step="1" value="205" inputmode="numeric" />
+      <div class="pill"><span id="mTotal">0</span> lbs</div>
+    </div>
+
+    <div class="row grid">
+      <label>Females</label>
+      <input id="fCount" type="number" min="0" step="1" value="1" inputmode="numeric" />
+      <input id="fWgt" type="number" min="0" step="1" value="184" inputmode="numeric" />
+      <div class="pill"><span id="fTotal">0</span> lbs</div>
+    </div>
+
+    <div class="row grid">
+      <label>Children</label>
+      <input id="cCount" type="number" min="0" step="1" value="0" inputmode="numeric" />
+      <input id="cWgt" type="number" min="0" step="1" value="0" inputmode="numeric" />
+      <div class="pill"><span id="cTotal">0</span> lbs</div>
+    </div>
+
+    <div class="row grid">
+      <label>Bags (Cargo)</label>
+      <input id="bCount" type="number" min="0" step="1" value="0" inputmode="numeric" />
+      <input id="bWgt" type="number" min="0" step="1" value="0" inputmode="numeric" />
+      <div class="pill"><span id="bTotal">0</span> lbs</div>
+    </div>
+
+    <div class="footer">
+      <div class="tot">Grand Total: <span id="grandTotal">0</span> lbs</div>
+      <div class="pill">CARGO WEIGHT = Bags total</div>
+    </div>
+
+    <div style="margin-top:14px;">
+      <label for="output" class="hdr" style="display:block;margin-bottom:6px;">Generated comment text</label>
+      <textarea id="output" readonly></textarea>
+      <div class="actions">
+        <button id="copyBtn" type="button">Copy to clipboard</button>
+        <button id="resetBtn" type="button">Reset to zeros</button>
+      </div>
+      <div class="note">
+        ADULTS COUNT is always forced to 0. Weights are output as whole numbers with “LBS”.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const els = {
+      mCount: document.getElementById('mCount'),
+      mWgt: document.getElementById('mWgt'),
+      fCount: document.getElementById('fCount'),
+      fWgt: document.getElementById('fWgt'),
+      cCount: document.getElementById('cCount'),
+      cWgt: document.getElementById('cWgt'),
+      bCount: document.getElementById('bCount'),
+      bWgt: document.getElementById('bWgt'),
+
+      mTotal: document.getElementById('mTotal'),
+      fTotal: document.getElementById('fTotal'),
+      cTotal: document.getElementById('cTotal'),
+      bTotal: document.getElementById('bTotal'),
+      grandTotal: document.getElementById('grandTotal'),
+
+      output: document.getElementById('output'),
+      copyBtn: document.getElementById('copyBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+    };
+
+    function n(v) {
+      const x = Number(v);
+      return Number.isFinite(x) && x > 0 ? Math.floor(x) : 0;
+    }
+
+    function lineTotal(countEl, wgtEl) {
+      return n(countEl.value) * n(wgtEl.value);
+    }
+
+    function build() {
+      const mC = n(els.mCount.value), mW = n(els.mWgt.value);
+      const fC = n(els.fCount.value), fW = n(els.fWgt.value);
+      const cC = n(els.cCount.value), cW = n(els.cWgt.value);
+      const bC = n(els.bCount.value), bW = n(els.bWgt.value);
+
+      const mT = mC * mW;
+      const fT = fC * fW;
+      const cT = cC * cW;
+      const bT = bC * bW; // treated as cargo
+
+      const grand = mT + fT + cT + bT;
+
+      els.mTotal.textContent = String(mT);
+      els.fTotal.textContent = String(fT);
+      els.cTotal.textContent = String(cT);
+      els.bTotal.textContent = String(bT);
+      els.grandTotal.textContent = String(grand);
+
+      // Required output format. ADULTS COUNT forced to 0.
+      const text =
+`-SET ADULTS COUNT TO 0.
+-SET MALES COUNT TO ${mC}.
+-SET MALES WEIGHT TO ${mW}LBS.
+-SET FEMALES COUNT TO ${fC}.
+-SET FEMALES WEIGHT TO ${fW}LBS.
+-SET CHILDREN COUNT TO ${cC}.
+-SET CHILDREN WEIGHT TO ${cW}LBS
+-SET CARGO WEIGHT TO ${bT}LBS.`;
+
+      els.output.value = text;
+    }
+
+    function wire() {
+      const inputs = [els.mCount, els.mWgt, els.fCount, els.fWgt, els.cCount, els.cWgt, els.bCount, els.bWgt];
+      inputs.forEach(i => i.addEventListener('input', build));
+
+      els.copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(els.output.value);
+          els.copyBtn.textContent = 'Copied!';
+          setTimeout(() => (els.copyBtn.textContent = 'Copy to clipboard'), 1200);
+        } catch {
+          // Fallback: select text for manual copy
+          els.output.focus();
+          els.output.select();
+          els.copyBtn.textContent = 'Select + Ctrl+C';
+          setTimeout(() => (els.copyBtn.textContent = 'Copy to clipboard'), 1500);
+        }
+      });
+
+      els.resetBtn.addEventListener('click', () => {
+        [els.mCount, els.mWgt, els.fCount, els.fWgt, els.cCount, els.cWgt, els.bCount, els.bWgt]
+          .forEach(el => el.value = 0);
+        build();
+      });
+
+      build();
+    }
+
+    wire();
+  </script>
+</body>
+</html>
