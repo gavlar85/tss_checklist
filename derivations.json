@@ -1,0 +1,18 @@
+{
+  "flags": [
+    {
+      "id": "D_HAS_UK",
+      "any": [
+        { "field": "country", "equals": "GB" },
+        { "tag": "UK" }
+      ]
+    },
+    {
+      "id": "D_HAS_GAR",
+      "any": [
+        { "tag": "GAR" },
+        { "field": "country", "equals": "GB" }
+      ]
+    }
+  ]
+}
