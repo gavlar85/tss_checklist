@@ -88,22 +88,6 @@ sections: [
               "enabled_by": "Q_ACTION=New Trip||Q_ACTION=Trip Update",
               "disabled_by": "Q_INITIAL5=Services Only Trip||Q_INITIAL1=RSP||Q_INITIAL1=APD",
             },
-            //{
-            //  "id": "Q_INITIAL2",
-            //  "label": "Is the trip operating TO any of the following?",
-            //  "type": "multi",
-            //  "options": [ "Brazil","Caribbean","China","Finland","Greece","Hong Kong","Poland","UAE","UK","USA", "None of the listed" ],
-            //  "enabled_by": "Q_ACTION=New Trip||Q_ACTION=Trip Update",
-            //  "disabled_by": "Q_INITIAL5=Services Only Trip||Q_INITIAL1=RSP||Q_INITIAL1=APD",
-            //},
-            //{
-            //  "id": "Q_INITIAL3",
-            //  "label": "Is the trip operating FROM any of the following?",
-            //  "type": "multi",
-            //  "options": [ "Brazil","Caribbean","China","Finland","Greece","Hong Kong","Poland","UAE","UK","USA", "None of the listed" ],
-            //  "enabled_by": "Q_ACTION=New Trip||Q_ACTION=Trip Update",
-            //  "disabled_by": "Q_INITIAL5=Services Only Trip||Q_INITIAL1=RSP||Q_INITIAL1=APD",
-            //},
             {
               "id": "Q_UPDATE1",
               "label": "Which elements to the trip have been updated?",
@@ -483,11 +467,11 @@ sections: [
               "disabled_by": null
             },
             {
-              "id": "Q_APD1",
+              "id": "Q_UKGAR1",
               "label": "Will UV or the handler complete UK GAR?",
               "type": "radio",
               "options": [ "Yes", "No - OWN" ],
-              "enabled_by": "Q_INITIAL2=UK",
+              "enabled_by": "D_HAS_GAR=Yes",
               "disabled_by": null
             },
             {
