@@ -1318,14 +1318,10 @@ if (["Q_MISSIONID", "Q_REG", "Q_ACTION"].includes(q.id)) {
             }
 
             function syncRegistryFromGrid() {
-              const vals = inputs.map(i => normalizeToken(i.value)).filter(v => v.length === 4);
-              // store as a single string (space-separated) so existing logic continues to work
-              // and retrieval/export stays simple
-              // Note: getInputValue("Q_LOCATIONS") will also return a space-separated string.
-              // Keeping both in sync avoids surprises.
-              // (We don't set values directly here; getInputValue reads from elements.)
-              evaluateVisibility();
-              updatePrintButtonState();
+           // Recompute derived flags first, then apply visibility
+           updateDerivedFlagsFromItinerary();
+           evaluateVisibility();
+           updatePrintButtonState();
             }
 
             for (let i = 0; i < slots; i++) {
