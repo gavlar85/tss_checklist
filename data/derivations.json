@@ -10,10 +10,11 @@
     {
       "id": "D_HAS_USA",
       "any": [
-        { "airportHasTag": "US" },
+        { "airportHasTag": "USA" },
         { "airportField": "country", "equals": "US" }
       ]
     }
   ]
 }
+
 
