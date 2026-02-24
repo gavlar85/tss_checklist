@@ -521,19 +521,6 @@ sections: [
               "disabled_by": null
             },
             {
-              "id": "Q_BOE1",
-              "label": "If the client is arriving into the US from South America do they have a Border Overflight Exemption (BOE)?",
-              "type": "radio",
-              "options": [
-                "Client not arriving from South America",
-                "No - Client Advised - Task Loaded",
-                "No - UWA to arrange",
-                "Yes - Client has a valid BOE"
-              ],
-              "enabled_by": "D_HAS_USA=Yes",
-              "disabled_by": null
-            },
-            {
               "id": "Q_CUSTOMS1",
               "label": "Will UV arrange US Customs?",
               "type": "radio",
@@ -873,7 +860,7 @@ sections: [
                 "No - UWA to arrange",
                 "Yes - Client has a valid BOE"
               ],
-              "enabled_by": "Q_INITIAL2=USA",
+              "enabled_by": "D_HAS_USA=Yes",
               "disabled_by": "Q_INITIAL1=Border Overflight Exemption"
             },
             {
