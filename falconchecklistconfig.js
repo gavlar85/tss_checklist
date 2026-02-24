@@ -420,7 +420,7 @@ sections: [
                 "Arriving in KEWR - PPR Reviewed and changed as required",
                 "Not arriving in KTEB or KEWR", 
                 ],
-              "enabled_by": "Q_INITIAL2=USA;Q_INITIAL1=Handling/Slots/PPR",
+              "enabled_by": "D_HAS_TEB=Yes",
               "disabled_by": null
             },
               {
