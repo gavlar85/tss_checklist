@@ -1,8 +1,11 @@
 {
-  "EGSS": { "country": "GB", "name": "London Stansted", "tags": ["UK", "GAR"] },
-  "EIDW": { "country": "IE", "name": "Dublin" },
-  "LFPG": { "country": "FR", "name": "Paris CDG", "tags": ["EU", "SCHENGEN"] },
+  "EFHK": { "country": "FI", "name": "Helsinki", "tags": ["FI"] },
+  "EGSS": { "country": "GB", "name": "London Stansted", "tags": ["UK"] },
+  "EIDW": { "country": "IE", "name": "Dublin", "tags": ["IE"] },
+  "LFPG": { "country": "FR", "name": "Paris CDG", "tags": ["FR", "SCHENGEN"] },
+  "LGAV": { "country": "GR", "name": "Athens", "tags": ["GR", "SCHENGEN"] },
   "OMDW": { "country": "AE", "name": "Al Maktoum", "tags": ["UAE"] },
   "KTEB": { "country": "US", "name": "Teterboro", "tags": ["USA"] }
 
 }
+
