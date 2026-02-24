@@ -67,7 +67,8 @@
   "LJLJ": { "country": "SI", "name": "Ljubljana", "tags": ["SI"] },
 
   "OMDW": { "country": "AE", "name": "Al Maktoum International", "tags": ["AE"] },
-  "KTEB": { "country": "US", "name": "Teterboro", "tags": ["US"] }
+  "KTEB": { "country": "US", "name": "Teterboro", "tags": ["US", "TEB"] }
 }
+
 
 
