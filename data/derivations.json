@@ -4,7 +4,7 @@
       "id": "D_HAS_UK",
       "any": [
         { "airportField": "country", "equals": "GB" },
-        { "airportHasTag": "UK" }
+        { "airportHasTag": "GB" }
       ]
     },
     {
@@ -35,6 +35,7 @@
     }
   ]
 }
+
 
 
 
