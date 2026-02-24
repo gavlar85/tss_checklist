@@ -515,6 +515,22 @@ sections: [
               "enabled_by": "D_HAS_UAE=Yes",
               "disabled_by": null
             },
+            {
+              "id": "Q_GRAPIS1",
+              "label": "Will UV transmit the Greek APIS?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "D_HAS_GR=Yes",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_FIAPIS1",
+              "label": "Will UV transmit the Finish APIS?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "D_HAS_FI=Yes",
+              "disabled_by": null
+            },
           ]
         },
         {
