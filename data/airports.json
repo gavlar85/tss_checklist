@@ -2,5 +2,7 @@
   "EGSS": { "country": "GB", "name": "London Stansted", "tags": ["UK", "GAR"] },
   "EIDW": { "country": "IE", "name": "Dublin" },
   "LFPG": { "country": "FR", "name": "Paris CDG", "tags": ["EU", "SCHENGEN"] },
+  "OMDW": { "country": "AE", "name": "Al Maktoum", "tags": ["UAE"] },
   "KTEB": { "country": "US", "name": "Teterboro", "tags": ["USA"] }
+
 }
