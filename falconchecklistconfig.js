@@ -413,14 +413,14 @@ sections: [
             },
             {
               "id": "Q_TEB_EWR_PPR",
-              "label": "If arriving into KTEB or KEWR have PPR requirements been reviewed?",
+              "label": "Have PPR requirements been reviewed?",
               "type": "multi",
+              "tooltip": "Maybe a CAPPS only issue however PPR is often marked as required when not",
               "options": [ 
-                "Arriving in KTEB - PPR Reviewed and changed as required", 
-                "Arriving in KEWR - PPR Reviewed and changed as required",
-                "Not arriving in KTEB or KEWR", 
+                "Yes - loaded as NOT REQUIRED", 
+                "Yes - Required and loaded accordingly", 
                 ],
-              "enabled_by": "D_HAS_TEB=Yes",
+              "enabled_by": "D_HAS_TEB=Yes||D_HAS_EWR=Yes",
               "disabled_by": null
             },
               {
