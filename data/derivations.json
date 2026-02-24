@@ -8,11 +8,12 @@
       ]
     },
     {
-      "id": "D_HAS_GAR",
+      "id": "D_HAS_USA",
       "any": [
-        { "airportHasTag": "GAR" },
-        { "airportField": "country", "equals": "GB" }
+        { "airportHasTag": "US" },
+        { "airportField": "country", "equals": "US" }
       ]
     }
   ]
 }
+
