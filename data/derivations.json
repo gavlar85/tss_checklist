@@ -13,8 +13,16 @@
         { "airportHasTag": "USA" },
         { "airportField": "country", "equals": "US" }
       ]
+    },
+    {
+      "id": "D_HAS_UAE",
+      "any": [
+        { "airportHasTag": "UAE" },
+        { "airportField": "country", "equals": "AE" }
+      ]
     }
   ]
 }
+
 
 
