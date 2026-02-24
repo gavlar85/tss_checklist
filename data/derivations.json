@@ -24,17 +24,18 @@
     {
       "id": "D_HAS_TEB",
       "any": [
-        { "airportHasTag": "TEB" },
+        { "airportHasTag": "TEB" }
       ]
-    }
+    },
     {
       "id": "D_HAS_EWR",
       "any": [
-        { "airportHasTag": "EWR" },
+        { "airportHasTag": "EWR" }
       ]
     }
   ]
 }
+
 
 
 
