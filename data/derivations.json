@@ -20,9 +20,22 @@
         { "airportHasTag": "UAE" },
         { "airportField": "country", "equals": "AE" }
       ]
+    },
+    {
+      "id": "D_HAS_TEB",
+      "any": [
+        { "airportHasTag": "TEB" },
+      ]
+    }
+    {
+      "id": "D_HAS_EWR",
+      "any": [
+        { "airportHasTag": "EWR" },
+      ]
     }
   ]
 }
+
 
 
 
