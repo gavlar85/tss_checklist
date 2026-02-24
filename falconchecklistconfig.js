@@ -496,7 +496,7 @@ sections: [
               "label": "Will UV or the handler complete UK GAR?",
               "type": "radio",
               "options": [ "Yes", "No - OWN" ],
-              "enabled_by": "D_HAS_GAR=Yes",
+              "enabled_by": "D_HAS_UK=Yes",
               "disabled_by": null
             },
             {
