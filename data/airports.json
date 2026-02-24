@@ -1,11 +1,73 @@
 {
-  "EFHK": { "country": "FI", "name": "Helsinki", "tags": ["FI"] },
-  "EGSS": { "country": "GB", "name": "London Stansted", "tags": ["UK"] },
-  "EIDW": { "country": "IE", "name": "Dublin", "tags": ["IE"] },
-  "LFPG": { "country": "FR", "name": "Paris CDG", "tags": ["FR", "SCHENGEN"] },
-  "LGAV": { "country": "GR", "name": "Athens", "tags": ["GR", "SCHENGEN"] },
-  "OMDW": { "country": "AE", "name": "Al Maktoum", "tags": ["UAE"] },
-  "KTEB": { "country": "US", "name": "Teterboro", "tags": ["USA"] }
+  "EFHK": { "country": "FI", "name": "Helsinki Vantaa", "tags": ["FI"] },
+  "ESSA": { "country": "SE", "name": "Stockholm Arlanda", "tags": ["SE"] },
+  "ENGM": { "country": "NO", "name": "Oslo Gardermoen", "tags": ["NO"] },
+  "EKCH": { "country": "DK", "name": "Copenhagen Kastrup", "tags": ["DK"] },
 
+  "EGSS": { "country": "GB", "name": "London Stansted", "tags": ["GB"] },
+  "EGGW": { "country": "GB", "name": "London Luton", "tags": ["GB"] },
+  "EGLF": { "country": "GB", "name": "Farnborough", "tags": ["GB"] },
+  "EGKB": { "country": "GB", "name": "London Biggin Hill", "tags": ["GB"] },
+  "EGKK": { "country": "GB", "name": "London Gatwick", "tags": ["GB"] },
+  "EGLL": { "country": "GB", "name": "London Heathrow", "tags": ["GB"] },
+  "EGNX": { "country": "GB", "name": "East Midlands", "tags": ["GB"] },
+
+  "EIDW": { "country": "IE", "name": "Dublin", "tags": ["IE"] },
+  "EINN": { "country": "IE", "name": "Shannon", "tags": ["IE"] },
+
+  "LFPG": { "country": "FR", "name": "Paris Charles de Gaulle", "tags": ["FR"] },
+  "LFPB": { "country": "FR", "name": "Paris Le Bourget", "tags": ["FR"] },
+  "LFMN": { "country": "FR", "name": "Nice Côte d'Azur", "tags": ["FR"] },
+  "LFMD": { "country": "FR", "name": "Cannes Mandelieu", "tags": ["FR"] },
+  "LFML": { "country": "FR", "name": "Marseille Provence", "tags": ["FR"] },
+
+  "EDDF": { "country": "DE", "name": "Frankfurt Main", "tags": ["DE"] },
+  "EDDM": { "country": "DE", "name": "Munich", "tags": ["DE"] },
+  "EDDK": { "country": "DE", "name": "Cologne Bonn", "tags": ["DE"] },
+  "EDDL": { "country": "DE", "name": "Düsseldorf", "tags": ["DE"] },
+  "EDFH": { "country": "DE", "name": "Frankfurt Hahn", "tags": ["DE"] },
+
+  "LSZH": { "country": "CH", "name": "Zurich", "tags": ["CH"] },
+  "LSGG": { "country": "CH", "name": "Geneva", "tags": ["CH"] },
+  "LSZR": { "country": "CH", "name": "St Gallen Altenrhein", "tags": ["CH"] },
+
+  "LIML": { "country": "IT", "name": "Milan Linate", "tags": ["IT"] },
+  "LIMC": { "country": "IT", "name": "Milan Malpensa", "tags": ["IT"] },
+  "LIRA": { "country": "IT", "name": "Rome Ciampino", "tags": ["IT"] },
+  "LIRF": { "country": "IT", "name": "Rome Fiumicino", "tags": ["IT"] },
+  "LIPZ": { "country": "IT", "name": "Venice Marco Polo", "tags": ["IT"] },
+
+  "LEMD": { "country": "ES", "name": "Madrid Barajas", "tags": ["ES"] },
+  "LEBL": { "country": "ES", "name": "Barcelona", "tags": ["ES"] },
+  "LEPA": { "country": "ES", "name": "Palma de Mallorca", "tags": ["ES"] },
+  "LEMG": { "country": "ES", "name": "Malaga", "tags": ["ES"] },
+
+  "LPPT": { "country": "PT", "name": "Lisbon", "tags": ["PT"] },
+  "LPPR": { "country": "PT", "name": "Porto", "tags": ["PT"] },
+  "LPAZ": { "country": "PT", "name": "Santa Maria (Azores)", "tags": ["PT"] },
+
+  "EHAM": { "country": "NL", "name": "Amsterdam Schiphol", "tags": ["NL"] },
+  "EHRD": { "country": "NL", "name": "Rotterdam The Hague", "tags": ["NL"] },
+
+  "EBBR": { "country": "BE", "name": "Brussels", "tags": ["BE"] },
+
+  "LOWW": { "country": "AT", "name": "Vienna", "tags": ["AT"] },
+
+  "LKPR": { "country": "CZ", "name": "Prague", "tags": ["CZ"] },
+
+  "EPWA": { "country": "PL", "name": "Warsaw Chopin", "tags": ["PL"] },
+
+  "LGAV": { "country": "GR", "name": "Athens", "tags": ["GR"] },
+
+  "LTFM": { "country": "TR", "name": "Istanbul Airport", "tags": ["TR"] },
+  "LTBA": { "country": "TR", "name": "Istanbul Ataturk", "tags": ["TR"] },
+
+  "ULLI": { "country": "RU", "name": "St Petersburg Pulkovo", "tags": ["RU"] },
+
+  "LJLJ": { "country": "SI", "name": "Ljubljana", "tags": ["SI"] },
+
+  "OMDW": { "country": "AE", "name": "Al Maktoum International", "tags": ["AE"] },
+  "KTEB": { "country": "US", "name": "Teterboro", "tags": ["US"] }
 }
+
 
