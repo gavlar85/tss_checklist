@@ -430,11 +430,36 @@ sections: [
               "enabled_by": null,
               "disabled_by": null
             },
+            {
+              "id": "Q_PERMITFIQ1",
+              "label": "Has an FIQ been run to ascertain required permits?",
+              "type": "radio",
+              "options": [ "Yes - UV Route exists", "Yes - Optimised Route (FOR CONSULTATION ONLY)", "No - Awaiting Route Build" ],
+              "enabled_by": null,
+              "disabled_by": null,
+            },
               {
               "id": "SUB_ITIN_HOTELS",
               "label": "HOTELS",
               "type": "subsection",
               "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_HOTELARRANGE",
+              "label": "Has the client requested UWA arrange Hotels?",
+              "type": "radio",
+              "tooltip": "Stop Type includes RON and INITIAL QUESTIONS does not include Hotels",
+              "options": [ "No - Client Own Booking", "Yes", "Unknown - Task Loaded", "Hotels Not Required"],
+              "enabled_by": "Q_STOPTYPE=RON",
+              "disabled_by": "Q_INITIAL1=Hotels",
+            },
+            {
+              "id": "Q_HOTELINQUIRY",
+              "label": "Has a hotel inquiry been loaded?",
+              "type": "radio",
+              "options": [ "Yes", "No - Client specified hotel", "No - NLT Loaded"],
+              "enabled_by": "Q_HOTELARRANGE=Yes||Q_INITIAL1=Hotels",
               "disabled_by": null
             },
               {
@@ -479,7 +504,15 @@ sections: [
               "label": "Will UV transmit the US eAPIS?",
               "type": "radio",
               "options": [ "Yes", "No - OWN" ],
-              "enabled_by": "Q_INITIAL2=USA",
+              "enabled_by": "D_HAS_USA=Yes",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_EAPIS1",
+              "label": "Will UV transmit the UAE API?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "D_HAS_UAE=Yes",
               "disabled_by": null
             },
           ]
@@ -703,6 +736,14 @@ sections: [
               "enabled_by": null,
               "disabled_by": null
             },
+            {
+              "id": "Q_PERMITTOFLY",
+              "label": "Is the aircraft being operated on a Permit To Fly?",
+              "type": "radio",
+              "options": [ "Yes - Loaded to Trip", "No - Task Loaded" ],
+              "enabled_by": null,
+              "disabled_by": null,
+            },
           ]
         },
         {
@@ -783,6 +824,14 @@ sections: [
               "disabled_by": null
             },
             {
+              "id": "Q_CREWMMANIFEST1",
+              "label": "Is any Crew information missing?",
+              "type": "radio",
+              "options": [ "Yes - NLT Loaded", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
               "id": "SUB_ITIN_PAX",
               "label": "PASSENGERS",
               "type": "subsection",
@@ -790,11 +839,11 @@ sections: [
               "disabled_by": null
             },
             {
-              "id": "Q_MANIFEST1",
-              "label": "Is any Crew or Pax information missing?",
+              "id": "Q_PAXMMANIFEST1",
+              "label": "Is any Passenger information missing?",
               "type": "radio",
-              "options": [ "Crew - Task Loaded", "Passengers - Task Loaded", "Both - Task Loaded", "No" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_INITIAL1=APD||Q_INITIAL3=Crew/Pax",
+              "options": [ "Yes - NLT Loaded", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
@@ -853,22 +902,8 @@ sections: [
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
-            {
-              "id": "Q_HOTEL1",
-              "label": "Has the client requested UWA arrange Hotels?",
-              "type": "radio",
-              "options": [ "No - Client Own Booking", "Yes", "Unknown - Task Loaded", "Hotels Not Required"],
-              "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=Hotels",
-            },
-            {
-              "id": "Q_HOTEL4",
-              "label": "Has a hotel inquiry been loaded?",
-              "type": "radio",
-              "options": [ "Yes", "No - Client specified hotel", "No - Client Task Loaded"],
-              "enabled_by": "Q_HOTEL1=Yes||Q_INITIAL1=Hotels",
-              "disabled_by": null
-            },
+
+
             {
               "id": "Q_HOTEL6",
               "label": "Has the client advised a hotel choice?",
