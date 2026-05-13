@@ -42,7 +42,7 @@ sections: [
           "questions": [
             {
               "id": "Q_COMS1",
-              "label": "Has the client email been responded to?",
+              "label": "Haves you responded to the client email through Front?",
               "type": "radio",
               "options": [ "Yes", "No" ],
               "enabled_by": "Q_COMMS=Email||Q_COMMS=Whatsapp",
@@ -150,7 +150,7 @@ sections: [
               "||Q_REG=GMULR||Q_REG=GWEAH",
             },
             {
-              "id": "Q_OPERATIONALTYPE",
+              "id": "Q_OPERATIONALTYPECOMMERCIAL",
               "label": "Has the Operational Type been correctly loaded?",
               "type": "radio",
               "options": ["Commercial Scheduled", "Commercial Non-Scheduled", "Private Non-Revenue" ],
@@ -208,13 +208,31 @@ sections: [
               "id": "Q_CLIENTREFNBR",
               "label": "Has any client provided reference number been loaded?",
               "type": "radio",
+              "tooltip": "Avionco, Titan, Avcon and CAMOSA give reference numbers, Bertelsmann use a 4-digit number",
               "options": [ "Yes", "No - No reference number provided" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_TRIPBOW",
-              "label": "Has any client provided BOW value been loaded?",
+              "id": "Q_TRIPSUPPORTTEAM",
+              "label": "Is the Support Team correct (EOC)?",
+              "type": "radio",
+              "options": [ "Yes", "No - Supporting Services/Supervisor Advised" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_TRIPSITE",
+              "label": "Has the site been loaded correctly?",
+              "type": "radio",
+              "tooltip": "Unless otherwise advised in Client Dashboard should be 'Services'",
+              "options": [ "Yes", "No - No BOW provided" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_TRIPOPERATOR",
+              "label": "Has the operator been loaded correctly?",
               "type": "radio",
               "options": [ "Yes", "No - No BOW provided" ],
               "enabled_by": "Q_ACTION=New Trip",
@@ -471,7 +489,73 @@ sections: [
               "enabled_by": "Q_INITIAL1=Transport||Q_STOPTYPE=RON",
               "disabled_by": null
             },
-              {
+            {
+              "id": "Q_TRANSPORT0",
+              "label": "Has any client requested transport been requested?",
+              "type": "radio",
+              "options": [ "Yes", "No transport requested" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null,
+            },            
+            {
+              "id": "Q_TRANSPORT1",
+              "label": "Who has Crew Transport been requested with?",
+              "type": "radio",
+              "options": [ "Handler", "Drivania" ],
+              "enabled_by": "Q_TRANSPORT0=Yes||Q_INITIAL1=Transport",
+              "disabled_by": "Q_REG=N372ET",
+            },
+            {
+              "id": "Q_TRANSPORT3",
+              "label": "Who has Crew Transport been requested with?",
+              "type": "radio",
+              "options": [ "GGT", "Drivania"],
+              "enabled_by": "Q_TRANSPORT0=Yes;Q_REG=N372ET",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_TRANSPORT4",
+              "label": "Has the client been advised we are unable to provide transport through GGT and a quote been requested from Drivania?",
+              "type": "multi",
+              "options": [ "Client Advised", "Drivania Quote Requested", "Drivania quote sent to client for approval"],
+              "enabled_by": "Q_TRANSPORT3=Drivania",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_TRANSPORT5",
+              "label": "Has the email to GGT been sent to the RMP and a task created?",
+              "type": "multi",
+              "options": [ "Email sent to RMP", "Transportation - GGT - ICAO task created", "Task follow up set for 48hrs prior to pick up"],
+              "enabled_by": "Q_TRANSPORT3=GGT",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_3AMGA13",
+              "label": "Who has Crew Transport been aranged with?",
+              "type": "radio",
+              "options": [ "Handler", "Own", "Drivania (Other options unavailable)" ],
+              "enabled_by": "Q_3AMGA10=Crew Transport (if required)",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_TRANSPORT2",
+              "label": "Has a quote for transport been sent to the client?",
+              "type": "radio",
+              "options": [ "Handler", "Drivania", "Own" ],
+              "enabled_by": "Q_REG=N700ME;Q_INITIAL1=Transport",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_TRANSPORT6",
+              "label": "Has a cancellation policy been advised to the client if booking is within 24hrs?",
+              "type": "radio",
+              "options": [ "Handler", "Drivania", "Own" ],
+              "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL1=Transport",
+              "disabled_by": "Q_TRANSPORT1=No Transport Required",
+            },
+            
+            
+            {
               "id": "SUB_ITIN_FUEL",
               "label": "FUEL",
               "type": "subsection",
@@ -839,7 +923,7 @@ sections: [
               "id": "Q_TRIPSERVICE1",
               "label": "Credit Exposure?",
               "type": "radio",
-              "options": [ "Yes", "No", "Maybe", "I don't know, could you repeat the question?" ],
+              "options": [ "Is Credit Exposure service in Pending (PND)" ],
               "enabled_by": "Q_ACTION=New Trip||Q_INITIAL1=APD||Q_INITIAL3=Crew/Pax",
               "disabled_by": null
             },
@@ -893,8 +977,24 @@ sections: [
               "disabled_by": null
             },
             {
-              "id": "Q_CREWMMANIFEST1",
+              "id": "Q_CREWINFO",
               "label": "Is any Crew information missing?",
+              "type": "radio",
+              "options": [ "Yes - NLT Loaded", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_CREWPOSITION",
+              "label": "Have the correct positions been assigned to each crew member? PIC, SIC, F/A etc",
+              "type": "radio",
+              "options": [ "Yes - NLT Loaded", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_CREWPASSPORT",
+              "label": "Have the correct passport been loaded for each crew member and each leg",
               "type": "radio",
               "options": [ "Yes - NLT Loaded", "No" ],
               "enabled_by": "Q_ACTION=New Trip",
@@ -971,12 +1071,21 @@ sections: [
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
-
-                        {
+            {
               "id": "Q_INFORMATION1",
-              "label": "Has the correct Primary Contacts been loaded?",
+              "label": "Have the correct Primary Contacts been loaded?",
               "type": "radio",
               "options": [ "Yes"],
+              "tooltip": "Ensure to include all contacts who would require be included in elements like APIS transmissions and Trip Briefs",
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_INFORMATIONEMAIL",
+              "label": "Have the correct Primary Contacts emails been loaded?",
+              "type": "radio",
+              "options": [ "Yes"],
+              "tooltip": "On initial trip load flip to Communications Tab to enter emails",
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
@@ -1299,70 +1408,7 @@ sections: [
               "enabled_by": "Q_INITIAL3=Date/Time",
               "disabled_by": null,
             },
-            {
-              "id": "Q_TRANSPORT0",
-              "label": "Has any client requested transport been requested?",
-              "type": "radio",
-              "options": [ "Yes", "No transport requested" ],
-              "enabled_by": "Q_INITIAL5=Full Trip",
-              "disabled_by": null,
-            },            
-            {
-              "id": "Q_TRANSPORT1",
-              "label": "Who has Crew Transport been requested with?",
-              "type": "radio",
-              "options": [ "Handler", "Drivania" ],
-              "enabled_by": "Q_TRANSPORT0=Yes||Q_INITIAL1=Transport",
-              "disabled_by": "Q_REG=N372ET",
-            },
-            {
-              "id": "Q_TRANSPORT3",
-              "label": "Who has Crew Transport been requested with?",
-              "type": "radio",
-              "options": [ "GGT", "Drivania"],
-              "enabled_by": "Q_TRANSPORT0=Yes;Q_REG=N372ET",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT4",
-              "label": "Has the client been advised we are unable to provide transport through GGT and a quote been requested from Drivania?",
-              "type": "multi",
-              "options": [ "Client Advised", "Drivania Quote Requested", "Drivania quote sent to client for approval"],
-              "enabled_by": "Q_TRANSPORT3=Drivania",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT5",
-              "label": "Has the email to GGT been sent to the RMP and a task created?",
-              "type": "multi",
-              "options": [ "Email sent to RMP", "Transportation - GGT - ICAO task created", "Task follow up set for 48hrs prior to pick up"],
-              "enabled_by": "Q_TRANSPORT3=GGT",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_3AMGA13",
-              "label": "Who has Crew Transport been aranged with?",
-              "type": "radio",
-              "options": [ "Handler", "Own", "Drivania (Other options unavailable)" ],
-              "enabled_by": "Q_3AMGA10=Crew Transport (if required)",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT2",
-              "label": "Has a quote for transport been sent to the client?",
-              "type": "radio",
-              "options": [ "Handler", "Drivania", "Own" ],
-              "enabled_by": "Q_REG=N700ME;Q_INITIAL1=Transport",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT6",
-              "label": "Has a cancellation policy been advised to the client if booking is within 24hrs?",
-              "type": "radio",
-              "options": [ "Handler", "Drivania", "Own" ],
-              "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL1=Transport",
-              "disabled_by": "Q_TRANSPORT1=No Transport Required",
-            },
+
           ]
         },
         {
@@ -1374,7 +1420,7 @@ sections: [
         },
         {
           "id": "S_TASKFINAL",
-          "title": "TASKS",
+          "title": "NLT",
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
@@ -1388,124 +1434,12 @@ sections: [
             },
             {
               "id": "Q_TASKFINAL1",
-              "label": "Task to chase for PIC Name (FRONT PAGES)",
+              "label": "Have any irrelevant NLTs been completed?",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_BASIC6=Not known - Task loaded",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
-            },
-            {
-              "id": "Q_TASKFINAL2",
-              "label": "Task to chase for Trip FAR Type (FRONT PAGES)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_BASIC11=Not advised - Task Loaded",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TASKFINAL3",
-              "label": "Task to chase for Outstanding Schedule (Missing schedule or No EOT selected)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_BASIC12=No - Task Loaded",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKFINAL5",
-              "label": "Task to chase for crew/pax manifest (Missing Information selected)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_MANIFEST1=Crew - Task Loaded||Q_MANIFEST1=Passengers - Task Loaded||Q_MANIFEST1=Both - Task Loaded",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKFINAL4",
-              "label": "Task to chase for Flight Planning Specs (Missing FP specs selected)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_FPWX2=Missing Information - Task Loaded",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKFINAL6",
-              "label": "Task to chase for documents (Missing Documents selected)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_PERMITS8=No - Missing Documents - Task Loaded",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_CAMOSA4",
-              "label": "Has a Task been loaded to generate passport flip gendecs for any legs to/from Nigeria",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_REG=MTENG",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_3AMGA11",
-              "label": "Task to chase for slot IDs (Client Arranging slots selected)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_SLOTS1=No||Q_SLOTS1=Yes - Some",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_3AMGA12",
-              "label": "Task to chase for PPR numbers (Client Arranging PPR selected)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_PPR1=No||Q_PPR1=Yes - Some",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKDRIVER",
-              "label": "Task to chase for driver details (name, registration, contact number)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_TRANSPORT1=Handler",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKMERGES",
-              "label": "Task to generate and attach merges 24hrs prior to delivery date/time",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_INITIAL5=Full Trip||Q_DELIVTIMEDATE2=No - Changed leg greater than 24hrs away - Task Loaded",
-              "disabled_by": "Q_INITIAL1=Customs Decal||Q_INITIAL1=Border Overflight Exemption||Q_INITIAL1=TSA Waiver",
-            },
-            {
-              "id": "Q_TASKDECAL",
-              "label": "Has a Customs Decal Task been loaded with the below information",
-              "type": "multi",
-              "options": [ "Decal Year", "Aircraft Registration(s)", "Aircraft Manufacturer/Type", "Year of Manufacture", "Email for Receipt" ],
-              "enabled_by": "Q_INITIAL1=Customs Decal",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKBOE",
-              "label": "Has a BOE Task been loaded with the below information",
-              "type": "multi",
-              "options": [ "New Request/Renewal", "Operator Name", "Private/Charter/Both", "Email for Receipt" ],
-              "enabled_by": "Q_INITIAL1=Border Overflight Exemption",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKTSAW",
-              "label": "Has a TSA Waiver Task been loaded with the below information",
-              "type": "multi",
-              "options": [ "New Request/Renewal/Modification", "Client email with application", "Email for Receipt" ],
-              "enabled_by": "Q_INITIAL1=TSA Waiver",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASK700HA",
-              "label": "Task been loaded to provide client with Daily Briefs starting 1week prior to departure",
-              "type": "radio",
-              "options": [ "Yes",],
-              "enabled_by": "Q_REG=N700HA",
-              "disabled_by": null
-            },
+            }
 
           ]
         },
