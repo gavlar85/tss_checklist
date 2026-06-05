@@ -28,7 +28,7 @@ disabled_by: null
 id: "Q_COMMS",
 label: "Method of communication?",
 type: "radio",
-options: ["Email", "Phone", "Whatsapp", "Public Task"],
+options: ["Email", "Phone", "Whatsapp"],
 enabled_by: null,
 disabled_by: "Q_ACTION=Flight Plan QC"
 }
@@ -92,7 +92,7 @@ sections: [
               "id": "Q_INITIAL1",
               "label": "Which Service(s) has the client requested?",
               "type": "multi",
-              "options": [ "Flight Plans", "Handling/Slots/PPR", "Customs", "Permits", "Hotels", "Transport", "Catering", "TCE", "APD", "RSP", "Customs Decal", "Border Overflight Exemption", "TSA Waiver" ],
+              "options": [ "Flight Plans", "Fuel", "Handling/Slots/PPR", "Customs", "Permits", "Hotels", "Transport", "Catering", "TCE", "APD", "RSP", "Customs Decal", "Border Overflight Exemption", "TSA Waiver" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
