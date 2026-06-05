@@ -19,4 +19,6 @@ window.CHECKLIST_USERS = [
   { fullName: "Roberto Diaz Jr", role: "user" },
   { fullName: "Tamara Nowacki", role: "user" },
   { fullName: "Thompson Kwok", role: "user" },
+  { fullName: "Joel Marsh", role: "user" },
+  { fullName: "Ani Koikkaran", role: "user" },
 ];
