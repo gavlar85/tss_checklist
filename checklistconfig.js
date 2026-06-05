@@ -1,16 +1,16 @@
 window.checklistConfig = {
 rootQuestions: [
 {
-id: "Q_MISSIONID",
-label: "Mission ID",
+id: "Q_REG",
+label: "Registration",
 type: "text",
 options: null,
 enabled_by: null,
 disabled_by: null
 },
 {
-id: "Q_REG",
-label: "Registration",
+id: "Q_MISSIONID",
+label: "Trip Number",
 type: "text",
 options: null,
 enabled_by: null,
@@ -20,7 +20,7 @@ disabled_by: null
 id: "Q_ACTION",
 label: "Action",
 type: "select",
-options: ["New Trip", "Trip Update","Flight Plan QC"],
+options: ["New Trip", "**WIP** Trip Update **WIP**","Flight Plan QC"],
 enabled_by: null,
 disabled_by: null
 },
@@ -29,57 +29,41 @@ id: "Q_COMMS",
 label: "Method of communication?",
 type: "radio",
 options: ["Email", "Phone", "Whatsapp"],
-enabled_by: null,
-disabled_by: "Q_ACTION=Flight Plan QC"
+enabled_by: "Q_ACTION=New Trip||Q_ACTION=Trip Update",
+disabled_by: null,
 }
 ],
 sections: [
         {
           "id": "S_CLIENTCOMS",
-          "title": "MAGIC THREE",
+          "title": "Communications",
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
             {
-              "id": "Q_CLIENTCOMS1",
-              "label": "Has the phone call been recorded as a Call Log and a TWU generated from the Call Log?",
+              "id": "Q_COMS1",
+              "label": "Haves you responded to the client email through Front?",
               "type": "radio",
               "options": [ "Yes", "No" ],
-              "enabled_by": "Q_COMMS=Phone",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_EMAIL1",
-              "label": "Has the client email been responded to and flagged and categorised in Outlook?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_COMMS=Email",
+              "enabled_by": "Q_COMMS=Email||Q_COMMS=Whatsapp",
               "disabled_by": null
             },
             {
               "id": "Q_EMAIL2",
-              "label": "Has the RMP been loaded to the trip, the trip placed on hold and a TWU created?",
+              "label": "Has the email been added to Trip Messages in Falcon?",
               "type": "radio",
               "options": [ "Yes", "No" ],
               "enabled_by": "Q_COMMS=Email",
               "disabled_by": null
             },
             {
-              "id": "Q_CLIENTCOMS4",
-              "label": "Has the client been responded to?",
+              "id": "Q_EMAIL3",
+              "label": "Has the message been archived within Front?",
               "type": "radio",
               "options": [ "Yes", "No" ],
-              "enabled_by": "Q_COMMS=Whatsapp",
+              "enabled_by": "Q_COMMS=Email",
               "disabled_by": null
             },
-            {
-              "id": "Q_CLIENTCOMS5",
-              "label": "Has an email containing screenshots of the conversation been sent to the RMP?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_COMMS=Whatsapp",
-              "disabled_by": null
-            }
           ]
         },
         {
@@ -92,26 +76,27 @@ sections: [
               "id": "Q_INITIAL1",
               "label": "Which Service(s) has the client requested?",
               "type": "multi",
-              "options": [ "Flight Plans", "Fuel", "Handling/Slots/PPR", "Customs", "Permits", "Hotels", "Transport", "Catering", "TCE", "APD", "RSP", "Customs Decal", "Border Overflight Exemption", "TSA Waiver" ],
+              "options": [ "Flight Plans", "Fuel", "Handling/Slots/PPR", "Customs", "API/APIS", "Permits", "Hotels", "Transport", "Catering", "TCE", "APD", "RSP", "Customs Decal", "Border Overflight Exemption", "TSA Waiver" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
             {
-              "id": "Q_INITIAL3",
+              "id": "Q_LOCATIONS",
+              "label": "List the Trip Itinerary ICAOs",
+              "type": "text",
+              "options": [ "Brazil","Caribbean","China","Finland","Greece","Hong Kong","Poland","UAE","UK","USA", "None of the listed" ],
+              "enabled_by": "Q_ACTION=New Trip||Q_ACTION=Trip Update",
+              "disabled_by": "Q_INITIAL5=Services Only Trip||Q_INITIAL1=RSP||Q_INITIAL1=APD",
+            },
+            {
+              "id": "Q_UPDATE1",
               "label": "Which elements to the trip have been updated?",
               "type": "multi",
               "options": [ "Date/Time", "Crew/Pax", "New Legs", "Services", "Other" ],
               "enabled_by": "Q_ACTION=Trip Update",
               "disabled_by": null,
             },
-            {
-              "id": "Q_INITIAL2",
-              "label": "Is the trip operating to the following?",
-              "type": "multi",
-              "options": [ "China","USA", "None of the listed" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_ACTION=Trip Update",
-              "disabled_by": "Q_INITIAL5=Services Only Trip||Q_INITIAL1=RSP||Q_INITIAL1=APD",
-            },
+            
             {
               "id": "Q_INITIAL4",
               "label": "Flight Plan QC for which client?",
@@ -139,54 +124,51 @@ sections: [
           ]
         },
         {
-          "id": "S_BASICSETUP",
-          "title": "FRONT PAGES",
+          "id": "S_TRIPTAB",
+          "title": "TRIP TAB",
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
             {
-              "id": "Q_BASIC1",
-              "label": "Have you checked the Dashboard and Customer Profile for client preferences?",
+              "id": "Q_PREFERENCES",
+              "label": "Have you checked the Dashboard and Client Preferences Tab to verify client preferences?",
               "type": "radio",
-              "options": [ "Yes", "No preferences exist - Task Loaded" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_INITIAL1=APD",
+              "options": [ "Yes", "No preferences exist - NLT loaded" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
             {
-              "id": "Q_BASIC2",
-              "label": "Is the departure Date/Time field correct?",
+              "id": "Q_OPERATIONALTYPE",
+              "label": "Has the Operational Type been correctly loaded?",
               "type": "radio",
-              "options": [ "Yes", "Departure ETD not known - Task loaded" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_INITIAL5=Services Only Trip",
-              "disabled_by": null
+              "options": [ "Private Non-Revenue", "Commercial Non-Scheduled" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": 
+              //TITAN
+              "Q_REG=GOATW||Q_REG=GXATW" +
+              //ASCEND
+              "||Q_REG=GMULR||Q_REG=GWEAH",
             },
             {
-              "id": "Q_BASIC3",
-              "label": "PHONE: Has the client been emailed to confirm details?",
+              "id": "Q_OPERATIONALTYPECOMMERCIAL",
+              "label": "Has the Operational Type been correctly loaded?",
               "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_ACTION=New Trip;Q_BASIC2=Phone",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_BASIC5",
-              "label": "Is the Operator name loaded correctly? Have you changed it on front page of trip as necessary?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_REG=MCVGL||Q_REG=4XCNZ",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_CAMOSABASIC5",
-              "label": "Has the Site number been changed to Site 02?",
-              "type": "radio",
-              "options": [ "Yes",],
-              "enabled_by": "Q_REG=MTENG;Q_INITIAL1=Transport||Q_REG=N224BH;Q_INITIAL1=Transport||Q_REG=MUATG;Q_INITIAL1=Transport",
+              "options": ["Commercial Scheduled", "Commercial Non-Scheduled", "Private Non-Revenue" ],
+              "tooltip": "Registration indicates a client who is a known commercial operator",
+              "enabled_by": "Q_REG=GOATW||Q_REG=GXATW||Q_REG=GMULR||Q_REG=GWEAH",
               "disabled_by": null,
+            },
+            {
+              "id": "Q_OPERATORNAME",
+              "label": "Is the Operator name loaded correctly?",
+              "type": "radio",
+              "options": [ "Yes", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
             },
             {
               "id": "Q_N372ET",
-              "label": "Is the Operator name loaded correctly? Have you changed it on front page of trip as necessary?",
+              "label": "Is the Operator name loaded correctly?",
               "type": "radio",
               "options": [ "Cloudfare", "East Dakota Ventures" ],
               "enabled_by": "Q_REG=N372ET",
@@ -201,40 +183,49 @@ sections: [
               "disabled_by": null
             },
             {
-              "id": "Q_BASIC6",
-              "label": "Have you loaded Captains name on front page of the trip?",
+              "id": "Q_CLIENTREFNBR",
+              "label": "Has any client provided reference number been loaded?",
               "type": "radio",
-              "options": [ "Yes", "Not known - Task loaded" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_INITIAL5=Services Only Trip",
+              "tooltip": "Avionco, Titan, Avcon and CAMOSA give reference numbers, Bertelsmann use a 4-digit number",
+              "options": [ "Yes", "No - No reference number provided" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_BASIC8",
-              "label": "If the Captain has changed have you updated Captains name on front page of the trip?",
+              "id": "Q_TRIPSUPPORTTEAM",
+              "label": "Is the Support Team correct (EOC)?",
               "type": "radio",
-              "options": [ "Captains name updated", "Captain hasn't changed", "Captain Not known - Task loaded" ],
-              "enabled_by": "Q_INITIAL3=Crew/Pax",
+              "options": [ "Yes", "No - Supporting Services/Supervisor Advised" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_BASIC7",
-              "label": "Has the client provided reference number been loaded?",
+              "id": "Q_TRIPSITE",
+              "label": "Has the site been loaded correctly?",
               "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_REG=GXATW||Q_REG=GOATW||Q_REG=MTENG||Q_REG=N372ET",
+              "options": [ "Yes", "No - Supporting Services/Supervisor Advised" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_TRIPOPERATOR",
+              "label": "Has the operator been loaded correctly?",
+              "type": "radio",
+              "options": [ "Yes", "No - Supporting Services/Supervisor Advised" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
               "id": "Q_ASCEND1",
               "label": "Has the 'SYG' flight number/call sign been loaded?",
               "type": "radio",
-              "options": [ "Yes", "No - Callsign differs across legs", "No - Task Loaded" ],
+              "options": [ "Yes", "No - Callsign differs across legs", "No - NLT loaded" ],
               "enabled_by": "Q_REG=GWEAH||Q_REG=GHODL||Q_REG=GULIT||Q_REG=GNOLA||Q_REG=GCRUX",
               "disabled_by": null
             },
             {
               "id": "Q_AVIONCO1",
-              "label": "Has flight number/call sign been RJR934 loaded?",
+              "label": "Has callsign/flight number RJR934 been loaded?",
               "type": "radio",
               "options": [ "Yes", "No" ],
               "enabled_by": "Q_REG=N934JM",
@@ -242,7 +233,7 @@ sections: [
             },
             {
               "id": "Q_AVIONCO2",
-              "label": "Has flight number/call sign been RJR85 loaded?",
+              "label": "Has callsign/flight number RJR85 been loaded?",
               "type": "radio",
               "options": [ "Yes", "No" ],
               "enabled_by": "Q_ACTION=New Trip;Q_REG=N885AQ",
@@ -257,111 +248,445 @@ sections: [
               "disabled_by": null
             },
             {
-              "id": "Q_BASIC9",
-              "label": "Has the trip communications page been filled out with the relevant contacts (selected appropriate PRE/CPY/HTL/GRS) and any non required contact removed?",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_INITIAL5=Services Only Trip",
-              "disabled_by": "Q_REG=3AMGA",
-            },
-            {
-              "id": "Q_3AMGA4",
-              "label": "Has the trip communications page (PRE/CPY/HTL/GRS) been adjusted to only operating crew?",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_REG=3AMGA",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_BASIC10",
-              "label": "Have the 'Send Service Confirmations' boxes been filled out accordingly?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_INITIAL5=Services Only Trip",
-              "disabled_by": "Q_INITIAL1=APD||Q_REG=3AMGA",
-            },
-            {
-              "id": "Q_APD1",
-              "label": "Have the 'Send Service Confirmations' boxes set to 'N'",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_INITIAL1=APD",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_BASIC11",
-              "label": "Is the FAR part clearly defined in the client request and loaded as such in the Trip?",
-              "type": "radio",
-              "options": [ "Yes", "No - Client is a known Private/Charter operator", "Not advised - Task Loaded" ],
-              "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL1=RSP||Q_INITIAL1=Permits",
-              "disabled_by": "Q_REG=N115JS",
-            },
-            {
-              "id": "Q_TRIPUPDATE1",
-              "label": "If Leg 1 schedule has been changed has the departure Date/Time field been updated?",
-              "type": "radio",
-              "options": [ "Yes", "Leg 1 schedule unchanged" ],
-              "enabled_by": "Q_ACTION=Trip Update;Q_INITIAL3=Date/Time||Q_ACTION=Trip Update;Q_INITIAL3=New Legs",
-              "disabled_by": "Q_ACTION=New Trip||Q_INITIAL5=Services Only Trip",
-            },
-            {
-              "id": "Q_BASIC12",
-              "label": "Has EOT been checked?",
-              "type": "radio",
-              "options": [ "Yes", "No - Task Loaded" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_INITIAL1=APD||Q_ACTION=Trip Update;Q_INITIAL3=Date/Time||Q_ACTION=Trip Update;Q_INITIAL3=New Legs",
-              "disabled_by": null
-            },
-            {
               "id": "Q_BASIC17",
               "label": "For locations where we are arranging handling, have you sent a Feasibility Guide from uvGO to client?",
               "type": "radio",
-              "options": [ "Yes", "No - Task Loaded"],
+              "options": [ "Yes", "No - NLT loaded"],
               "enabled_by": "Q_INITIAL5=Full Trip",
               "disabled_by": "Q_REG=MATEX",
             },
             {
-              "id": "Q_MATEX1",
-              "label": "Gayer has his own access to FIQ's in uvGO, so only send FIQs if Gayer isnt on the trip and you've had a specific request?",
+              "id": "Q_ONBOARDED",
+              "label": "Does the client show as On-Boarded?",
               "type": "radio",
-              "options": [ "Information sent as requested", "Not required" ],
-              "enabled_by": "Q_REG=MATEX",
+              "options": [ "Yes",  "No - Supporting Services/Supervisor Advised" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             }
           ]
         },
         {
-          "id": "S_CATERING",
-          "title": "CATERING",
-          "enabled_by": null,
+          "id": "S_ITINERARYTAB",
+          "title": "ITINERARY TAB",
+          "enabled_by": "Q_ACTION=New Trip",
+          "disabled_by": null,
+          "questions": []
+        },
+        {
+          "id": "S_TRIPSCHEDULER",
+          "title": "TRIP SCHEDULER",
+          "enabled_by": "Q_ACTION=New Trip",
           "disabled_by": null,
           "questions": [
             {
-              "id": "Q_CATERING",
-              "label": "Has client requested a catering menu?",
+              "id": "Q_DATESANDTIMES",
+              "label": "Are dates and times populated in all locations?",
               "type": "radio",
-              "options": [ "Yes", "No - Have sent an order to be requested" ],
-              "enabled_by": "Q_INITIAL1=Catering",
+              "options": [ "Yes - Client provided full schedule", "Yes - Client provided departure times (Falcon calculated flight times)", "Yes - Client didnt provide information (Assumed timings and Falcon calculated flight times)" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
-            }
+            },
+            {
+              "id": "Q_DATESANDTIMESNLT",
+              "label": "Has a Trip Action NLT and Client Call NLT been loaded to advise you've loaded assumed times and to check with client for intended schedule?",
+              "type": "radio",
+              "options": [ "Yes" ],
+              "enabled_by": "Q_DATESANDTIMES=Yes - Client didnt provide information (Assumed timings and Falcon calculated flight times)",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_TENTATIVE",
+              "label": "Have any tenative times been marked accordingly?",
+              "type": "radio",
+              "tooltip": "Tentative times can be shown with a small 't' after the time in Falcon",
+              "options": [ "Yes", "No - No tentative times in schedule" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_STOPTYPE",
+              "label": "Have stop types been correctly loaded?",
+              "type": "multi",
+              "options": [ "Tech","Bus","RON","EOT" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_GROUNDTIME",
+              "label": "Any Tech stop ETG times match client request?",
+              "type": "radio",
+              "options": [ "Yes","No - client didnt provide ETG times - NLT loaded","No - requested ETG not possible - Client advised" ],
+              "enabled_by": "Q_STOPTYPE=Tech",
+              "disabled_by": null,
+            },
           ]
         },
         {
-          "id": "S_MISC",
-          "title": "MISC",
+          "id": "S_LOCATIONSERVICES",
+          "title": "LOCATION SERVICES",
           "enabled_by": "Q_ACTION=New Trip",
           "disabled_by": null,
-          "questions": []
+          "questions": [
+              {
+              "id": "SUB_ITIN_HANDLING",
+              "label": "Handling",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_HANDLINGOWN1",
+              "label": "Have all handling services been set to OWN status?",
+              "type": "radio",
+              "options": [ "Yes"],
+              "tooltip": "INITIAL SERVICES indicates WFS not arranging handling",
+              "enabled_by": null,
+              "disabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+            },
+            {
+              "id": "Q_HANDLINGARRANGE",
+              "label": "Is UWA arranging all handling?",
+              "type": "radio",
+              "options": [ "Yes", "No" ],
+              "enabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_HANDLINGPREF",
+              "label": "Do selected handlers match client request/preferences",
+              "type": "multi",
+              "options": [ "Yes","No - Handler not in database - Supporting Services & Golbal Vendors advised", "No preference given - Priority 1 loaded" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_HANDLINGOWN2",
+              "label": "Have relevant handling services been set to OWN status?",
+              "type": "radio",
+              "options": [ "Yes"],
+              "tooltip": "HANDLING indicates WFS are not arranging ALL handling services",
+              "enabled_by": "Q_HANDLINGARRANGE=No",
+              "disabled_by": null,
+            },
+              {
+              "id": "SUB_ITIN_SLOTS",
+              "label": "Slots",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_SLOTSOWN",
+              "label": "Have slot services been loaded as OWN?",
+              "type": "radio",
+              "options": [ "Yes", "Slots Not Required"],
+              "tooltip": "INITIAL QUESTIONS indicates we are not arranging Slots",
+              "enabled_by": null,
+              "disabled_by": "Q_INITIAL1=Handling/Slots/PPR"
+            },
+            {
+              "id": "Q_SLOTSARRANGE2",
+              "label": "Is UWA arranging Slots?",
+              "type": "radio",
+              "options": [ "Yes - All", "Yes - Some", "Slots Not Required"],
+              "enabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_SLOTSOWNID",
+              "label": "Have any client provided slot IDs been loaded?",
+              "type": "radio",
+              "options": [ "Yes", "No - Client hasnt provided slot IDs - Client Call NLT loaded"],
+              "tooltip": "INITIAL QUESTIONS indicates we are not arranging Slots",
+              "enabled_by": "Q_SLOTSOWN=Yes||Q_SLOTSARRANGE2=Yes - Some",
+              "disabled_by": null
+            },
+              {
+              "id": "SUB_ITIN_PPR",
+              "label": "PPR",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_PPRARRANGE",
+              "label": "Is UWA arranging PPR?",
+              "type": "radio",
+              "options": [ "Yes - All", "Yes - Some", "PPR Not Required"],
+              "enabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_PPROWN",
+              "label": "Has PPR service been loaded as OWN?",
+              "type": "radio",
+              "options": [ "Yes", "PPR Not Required"],
+              "tooltip": "INITIAL QUESTIONS indicate we are not arranging PPR",
+              "enabled_by": null,
+              "disabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+            },
+            {
+              "id": "Q_PPROWNID",
+              "label": "Have any client provided PPR numbers been loaded?",
+              "type": "radio",
+              "options": [ "Yes", "No client provided PPR number - NLT loaded"],
+              "enabled_by": "Q_PPROWN=Yes||Q_PPRARRANGE=Yes - Some",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_TEB_EWR_PPR",
+              "label": "Have PPR requirements been reviewed?",
+              "type": "multi",
+              "tooltip": "Check PPR requirements - often not required",
+              "options": [ 
+                "Yes - loaded as NOT REQUIRED", 
+                "Yes - Required and loaded accordingly", 
+                ],
+              "enabled_by": "D_HAS_TEB=Yes||D_HAS_EWR=Yes",
+              "disabled_by": null
+            },
+              {
+              "id": "SUB_ITIN_LDGPERMITS",
+              "label": "LANDING PERMITS",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_PERMITLANDINGFIQ",
+              "label": "Does FIQ indicate landing permits are required?",
+              "type": "radio",
+              "options": [ "Yes", "No - Not required" ],
+              "enabled_by": null,
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_PERMITLANDING",
+              "label": "Have landing permits been loaded?",
+              "type": "radio",
+              "options": [ "Yes"],
+              "enabled_by": "Q_INITIAL1=Permits;Q_PERMITLANDINGFIQ=Yes",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_PERMITLANDINGOWN",
+              "label": "Have landing permits been loaded and changed to OWN status?",
+              "type": "radio",
+              "options": [ "Yes"],
+              "tooltip": "INITAL QUESTIONS indicated no Permits",
+              "enabled_by": "Q_PERMITLANDINGFIQ=Yes",
+              "disabled_by": "Q_INITIAL1=Permits;Q_PERMITLANDINGFIQ=Yes",
+            },
+            {
+              "id": "SUB_ITIN_GENDECS",
+              "label": "GENERAL DECLARATIONS",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_GENDECS",
+              "label": "Have Departure and Arrival gendecs (as appropriate) been loaded to each location?",
+              "type": "radio",
+              "options": [ "Yes", "No - NLT loaded"],
+              "enabled_by": null,
+              "disabled_by": null,
+            },
+                        {
+              "id": "Q_GENDECNLT",
+              "label": "Have Gendec NLTs been set to 48hrs prior to departure of the relevant leg they will be attached to?",
+              "type": "radio",
+              "options": [ "Yes", "No - Trip Action NLT loaded"],
+              "enabled_by": "Q_GENDECS=Yes;Q_INITIAL1=Flightplans",
+              "disabled_by": null,
+            },
+              {
+              "id": "SUB_ITIN_HOTELS",
+              "label": "HOTELS",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=Hotels||Q_STOPTYPE=RON",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_HOTELARRANGE",
+              "label": "Have hotel services been loaded as OWN?",
+              "type": "radio",
+              "tooltip": "Stop Type includes RON and INITIAL QUESTIONS does not include Hotels",
+              "options": [ "Yes - Client Own Booking", "No - hotels not required - Loaded as NOT REQUIRED", "No - not known if hotels required - NLT Loaded"],
+              "enabled_by": "Q_STOPTYPE=RON",
+              "disabled_by": "Q_INITIAL1=Hotels",
+            },
+            {
+              "id": "Q_HOTELINQUIRY",
+              "label": "Has a hotel inquiry NLT been loaded?",
+              "type": "radio",
+              "options": [ "Yes", "No - Client specified a hotel", "No - NLT Loaded"],
+              "enabled_by": "Q_HOTELARRANGE=Yes||Q_INITIAL1=Hotels",
+              "disabled_by": null
+            },
+              {
+              "id": "SUB_ITIN_TRANSPORT",
+              "label": "TRANSPORT",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=Transport||Q_STOPTYPE=RON",
+              "disabled_by": null
+            },           
+            {
+              "id": "Q_TRANSPORT1",
+              "label": "Who will be providing Crew Transport?",
+              "type": "radio",
+              "options": [ "Handler", "Third Party" ],
+              "enabled_by": "Q_INITIAL1=Transport",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_TRANSPORTHANDLERSERVICE",
+              "label": "Has a Special Service been loaded to the appropriate handler with full details on destination, vehicle type, number of pax?",
+              "type": "radio",
+              "options": [ "Yes", "No - Information missing - NLT Loaded" ],
+              "enabled_by": "Q_TRANSPORT1=Handler",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_TRANSPORTHANDLERSERVICE",
+              "label": "Has an NLT been loaded to chase the handler for driver information if not recieved?",
+              "type": "radio",
+              "options": [ "Yes" ],
+              "enabled_by": "Q_TRANSPORT1=Handler",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_TRANSPORTCANCELLATION",
+              "label": "Has a cancellation policy been advised to the client if booking is within 24hrs?",
+              "type": "radio",
+              "options": [ "Yes", "No - N/A" ],
+              "enabled_by": "Q_TRANSPORT1=Third Party",
+              "disabled_by": null,
+            },
+            
+            
+            {
+              "id": "SUB_ITIN_FUEL",
+              "label": "FUEL",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_FUELOWN",
+              "label": "Has Fuel service been loaded as OWN?",
+              "type": "radio",
+              "tooltip": "INITIAL QUESTIONS does not include Fuel",
+              "options": ["Yes"],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": "Q_INITIAL1=Fuel"
+            },
+            {
+              "id": "Q_FUELREQ",
+              "label": "Has Fuel service been loaded in all locations requested by client?",
+              "type": "radio",
+              "options": ["Yes", "No - Fuel not available in all locations requested - NLT Loaded"],
+              "enabled_by": "Q_INITIAL1=Fuel",
+              "disabled_by": null
+            },
+            {
+              "id": "SUB_ITIN_CUSTOMS",
+              "label": "CUSTOMS",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=Customs",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_AOE1",
+              "label": "Is the client arriving into an AOE?",
+              "type": "radio",
+              "options": [
+                "AOE",
+                "AOE - On Request - NLT loaded",
+                "No - NLT loaded",
+              ],
+              "enabled_by": "Q_INITIAL1=Customs||Q_INITIAL1=RSP",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_CBP1",
+              "label": "Is the client arriving CBP published hours?",
+              "type": "radio",
+              "options": [
+                "Yes",
+                "No - Client is arriving outside CBP hours, RSP Requested",
+                "No - Client is arriving outside CBP hours, RSP Not available"
+              ],
+              "enabled_by": "Q_INITIAL1=RSP",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_CUSTOMS1",
+              "label": "Will UV arrange US Customs?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "Q_INITIAL2=USA",
+              "disabled_by": null
+            },
+              {
+              "id": "SUB_ITIN_API",
+              "label": "API",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=API/APIS",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_UKGAR1",
+              "label": "Will UV or the handler complete UK GAR?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "Q_INITIAL1=API/APIS",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_EAPIS1",
+              "label": "Will UV transmit the US eAPIS?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "Q_INITIAL1=API/APIS",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_EAPIS2",
+              "label": "Has a NLT been loaded for 24hrs prior to departure?",
+              "type": "radio",
+              "options": [ "Yes", "No - Longer time needed prior to departure" ],
+              "enabled_by": "Q_EAPIS1=Yes",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_UAEAPI1",
+              "label": "Will UV transmit the UAE API?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "Q_INITIAL1=API/APIS",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_GRAPIS1",
+              "label": "Will UV transmit the Greek APIS?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "D_HAS_GR=Yes",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_FIAPIS1",
+              "label": "Will UV transmit the Finish APIS?",
+              "type": "radio",
+              "options": [ "Yes", "No - OWN" ],
+              "enabled_by": "D_HAS_FI=Yes",
+              "disabled_by": null
+            },
+          ]
         },
         {
-          "id": "S_REGSVCS",
-          "title": "REG SERVICES",
-          "enabled_by": "Q_ACTION=New Trip",
-          "disabled_by": null,
-          "questions": []
-        },
-        {
-          "id": "S_SCHED",
+          "id": "S_SCHEDULE",
           "title": "SCHEDULE",
           "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL5=Services Only Trip||Q_INITIAL3=Date/Time||Q_INITIAL3=New Legs",
           "disabled_by": "Q_INITIAL1=Customs Decal||Q_INITIAL1=Border Overflight Exemption||Q_INITIAL1=TSA Waiver",
@@ -430,22 +755,52 @@ sections: [
               "enabled_by": "Q_INITIAL3=Date/Time",
               "disabled_by": "Q_INITIAL1=Transport",
             },
-            {
-              "id": "Q_SCHED5",
-              "label": "Has COMPASS highlighted any potential timing issues with the planned schedule (curfews, operational hours, NOTAMS)?",
-              "type": "radio",
-              "options": [ "Yes - Client Advised", "No" ],
-              "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=APD||Q_INITIAL1=Transport"
-            },
+
           ]
         },
         {
-          "id": "S_PERMITS",
-          "title": "PERMITS",
-          "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL1=Permits||Q_INITIAL3=Date/Time",
+          "id": "S_LEGSERVICES",
+          "title": "LEG SERVICES",
+          "enabled_by": "Q_ACTION=New Trip||Q_INITIAL1=Permits||Q_INITIAL3=Date/Time",
           "disabled_by": null,
           "questions": [
+              {
+              "id": "SUB_ITIN_FLIGHTFOLLOWING",
+              "label": "FLIGHT FOLLOWING",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_FLIGHTFOLLOWING",
+              "label": "Is Flight Following and showing as PND?",
+              "type": "radio",
+              "options": [ "Yes", "No"],
+              "enabled_by": null,
+              "disabled_by": null,
+            },
+            {
+              "id": "SUB_ITIN_SPECFLIGHTAUTH",
+              "label": "SPECIAL FLIGHT AUTHORISATIONS",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=Permits",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_PERMITTOFLY",
+              "label": "Is the aircraft being operated on a Permit To Fly?",
+              "type": "radio",
+              "options": [ "Yes - Loaded to Trip", "No - NLT loaded" ],
+              "enabled_by": "Q_INITIAL1=Permits",
+              "disabled_by": null,
+            }, 
+            {
+              "id": "SUB_ITIN_OVFPERMITS",
+              "label": "OVERFLIGHT PERMITS",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
             {
               "id": "Q_PERMITSDATETIME",
               "label": "Have all permits been checked for validity and where required a revision sent?",
@@ -455,68 +810,20 @@ sections: [
               "disabled_by": "Q_INITIAL1=APD",
             },            
             {
-              "id": "Q_PERMITS1",
-              "label": "Has an FIQ been run to ascertain required permits?",
+              "id": "Q_OVFPERMITS1",
+              "label": "Does FIQ indicate that overflight permits are required?",
               "type": "radio",
-              "options": [ "Yes - UV Route exists", "Yes - Optimised Route (FOR CONSULTATION ONLY)", "No - Client Provided Route (Not yet in UV Routes)" ],
+              "options": [ "Yes", "No"],
               "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=APD||Q_INITIAL3=Date/Time"
-            },
-            {
-              "id": "Q_PERMITS2",
-              "label": "Have Route build tasks been loaded for any legs which don't have UV Routes?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_PERMITS1=Yes - Optimised Route (FOR CONSULTATION ONLY)",
               "disabled_by": null,
-            },
-            {
-              "id": "Q_PERMITS3",
-              "label": "Have Route build tasks been loaded to verify Client Provided Routes?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_PERMITS1=No - Client Provided Route (Not yet in UV Routes)",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_PERMITS10",
-              "label": "Have Route builds been loaded to Route History?",
-              "type": "radio",
-              "options": [ "Yes", "No - Awaiting Route Builds" ],
-              "enabled_by": "Q_PERMITS2=Yes||Q_PERMITS3=Yes",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_PERMITS11",
-              "label": "Has FIQ Route been loaded to Route History?",
-              "type": "radio",
-              "options": [ "Yes"],
-              "enabled_by": "Q_PERMITS1=Yes - UV Route exists",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_PERMITS4",
-              "label": "Does FIQ indicate permits are required?",
-              "type": "multi",
-              "options": [ "Yes - Landing", "Yes - Overflights", "No" ],
-              "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=APD||Q_INITIAL3=Date/Time||Q_PERMITS1=No - Client Provided Route (Not yet in UV Routes)"
             },
             {
               "id": "Q_PERMITS5",
-              "label": "Is UWA obtaining permits?",
+              "label": "Is UWA obtaining overflight permits?",
               "type": "multi",
-              "options": ["Yes - Landing", "Yes - Overflights", "Yes - Block Permits", "No" ],
+              "options": ["Yes - All", "Yes - Some", "No" ],
               "enabled_by": "Q_PERMITS4=Yes - Landing||Q_PERMITS4=Yes - Overflights",
               "disabled_by": null,
-            },
-            {
-              "id": "Q_CAMOSA2",
-              "label": "Is the Nigeria block permit loaded in CAPPS valid and current?",
-              "type": "multi",
-              "options": [ "Yes - Loaded to trip", "No - CAMOSA advised - Task Loaded" ],
-              "enabled_by": "Q_REG=MTENG||Q_REG=N224BH",
-              "disabled_by": "Q_INITIAL1=APD"
             },
             {
               "id": "Q_WWS12",
@@ -527,26 +834,10 @@ sections: [
               "disabled_by": "Q_INITIAL1=APD"
             },
             {
-              "id": "Q_PERMITS6",
-              "label": "Have permits been requested?",
-              "type": "multi",
-              "options": [ "Yes - Format Send", "Yes - Special Form", "Yes - Website", "No - Missing Information - Task Loaded" ],
-              "enabled_by": "Q_PERMITS5=Yes - All||Q_PERMITS5=Yes - Landing||Q_PERMITS5=Yes - Overflights",
-              "disabled_by": "Q_INITIAL1=APD"
-            },
-            {
-              "id": "Q_PERMITS7",
-              "label": "Have any permit required fields been completed?",
-              "type": "multi",
-              "options": [ "Yes - Route", "Yes - FIR Boundries", "Yes - Purpose", "Yes - Business Contact", "No - Task Loaded" ],
-              "enabled_by": "Q_PERMITS5=Yes - Landing||Q_PERMITS5=Yes - Overflights||Q_PERMITS5=Yes - All",
-              "disabled_by": "Q_INITIAL1=APD"
-            },
-            {
               "id": "Q_PERMITS8",
               "label": "Have required supporting documents been sent to the permit provider?",
               "type": "multi",
-              "options": [ "Yes - Added to Message Log", "No - Missing Documents - Task Loaded" ],
+              "options": [ "Yes - Added to Message Log", "No - Missing Documents - NLT loaded" ],
               "enabled_by": "Q_PERMITS6=Yes - Format Send||Q_PERMITS6=Yes - Special Form||Q_PERMITS6=Yes - Website",
               "disabled_by": "Q_INITIAL1=APD"
             },
@@ -554,155 +845,133 @@ sections: [
               "id": "Q_PERMITS9",
               "label": "Has the client provided required permit numbers?",
               "type": "radio",
-              "options": [ "Yes - Loaded to Trip", "No - Task Loaded" ],
+              "options": [ "Yes - Loaded to Trip", "No - NLT loaded" ],
               "enabled_by": "Q_PERMITS5=No",
               "disabled_by": "Q_INITIAL1=APD"
             },
           ]
         },
         {
-          "id": "S_HANDLING",
-          "title": "HANDLING SERVICES",
-          "enabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+          "id": "S_FLIGHTPLANNING",
+          "title": "FLIGHT PLANNING",
+          "enabled_by": "Q_ACTION=New Trip",
           "disabled_by": null,
-          "questions": [
-            {
-              "id": "Q_HAND1",
-              "label": "Is UWA arranging handling?",
-              "type": "radio",
-              "options": [ "Yes", "No", "A Mix" ],
-              "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=APD"
-            },
-            {
-              "id": "Q_115HAND1",
-              "label": "Do requested handlers agree with the UWA number one choice?",
-              "type": "radio",
-              "options": [ "Yes", "No - Juliet Team advised" ],
-              "enabled_by": "Q_REG=N115JS",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_HAND2",
-              "label": "Has client advised which handlers they will be using?",
-              "type": "radio",
-              "options": [ "Yes - OWN Handling with selected Handler", "No - OWN Handling with No Handling selected" ],
-              "enabled_by": "Q_HAND1=No||Q_HAND1=A Mix",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_HAND3",
-              "label": "Has any handling charge been made unbillable if relevant? (E.g. Homebase handling)",
-              "type": "radio",
-              "options": [ "Yes", "Not Applicable" ],
-              "enabled_by": "Q_HAND1=No||Q_HAND1=A Mix",
-              "disabled_by": "Q_HAND1=No||Q_REG=3AMGA"
-            },
-            {
-              "id": "Q_3AMGAHAND1",
-              "label": "Has LFMN handling been changed to Y and then made unbillable?",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_ACTION=New Trip;Q_REG=3AMGA",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_3AMGAHAND2",
-              "label": "Have Special Services been loaded",
-              "type": "multi",
-              "options": [ "Lav & Water", "Hangar (bad weather/snow only)", "Crew Transport (if required)", "Confirm NO special services in LFMN" ],
-              "enabled_by": "Q_HAND1=Yes;Q_REG=3AMGA",
-              "disabled_by": "Q_HAND1=No"
-            },
-            {
-              "id": "Q_HAND4",
-              "label": "Have Special Services been loaded",
-              "type": "radio",
-              "options": [ "Yes", "None Required" ],
-              "enabled_by": "Q_HAND1=Yes",
-              "disabled_by": "Q_HAND1=No||Q_REG=3AMGA"
-            },
-            {
-              "id": "Q_APD1",
-              "label": "Has handling been loaded correctly?",
-              "type": "multi",
-              "options": [ "Universal in UV locations", "OWN - Handler loaded where provided", "OWN - No Handling where not known" ],
-              "enabled_by": "Q_INITIAL1=APD",
-              "disabled_by": null
-            },
-          ]
+          "questions": []
         },
         {
-          "id": "S_PPR",
-          "title": "PPR",
-          "enabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+          "id": "S_WEATHER",
+          "title": "WEATHER",
+          "enabled_by": "Q_ACTION=New Trip",
           "disabled_by": null,
-          "questions": [
-            {
-              "id": "Q_USPPR",
-              "label": "If arriving into KTEB or KEWR have PPR requirements been reviewed?",
-              "type": "multi",
-              "options": [ 
-                "Arriving in KTEB - PPR Reviewed and changed as required", 
-                "Arriving in KEWR - PPR Reviewed and changed as required",
-                "Not arriving in KTEB or KEWR", 
-                ],
-              "enabled_by": "Q_INITIAL2=USA",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_PPR1",
-              "label": "Is UWA arranging PPR?",
-              "type": "radio",
-              "options": [ "Yes - All", "Yes - Some", "No", "PPR Not Required"],
-              "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=APD",
-            },
-            {
-              "id": "Q_PPR2",
-              "label": "Has PPR been requested with Handling?",
-              "type": "radio",
-              "options": [ "Yes", "No - Task Loaded", "No - SCR/GCR Required" ],
-              "enabled_by": "Q_PPR1=Yes",
-              "disabled_by": null
-            },
-          ]
+          "questions": []
         },
         {
-          "id": "S_SLOTS",
-          "title": "SLOTS",
-          "enabled_by": "Q_INITIAL1=Handling/Slots/PPR",
+          "id": "S_TRIPSERVICES",
+          "title": "TRIP SERVICES",
+          "enabled_by": "Q_ACTION=New Trip",
           "disabled_by": null,
           "questions": [
             {
-              "id": "Q_SLOTS1",
-              "label": "Is UWA arranging Slots?",
+              "id": "Q_TRIPSERVICE1",
+              "label": "Credit Exposure?",
               "type": "radio",
-              "options": [ "Yes - All", "Yes - Some", "No", "Slots Not Required"],
-              "enabled_by": null,
-              "disabled_by": null
-            },
-          ]
-        },
-        {
-          "id": "S_MANIFEST",
-          "title": "MANIFEST",
-          "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL1=APD||Q_INITIAL3=Crew/Pax",
-          "disabled_by": null,
-          "questions": [
-            {
-              "id": "Q_MANIFEST1",
-              "label": "Is any Crew or Pax information missing?",
-              "type": "radio",
-              "options": [ "Crew - Task Loaded", "Passengers - Task Loaded", "Both - Task Loaded", "No" ],
+              "options": [ "Is Credit Exposure service in Pending (PND)" ],
               "enabled_by": "Q_ACTION=New Trip||Q_INITIAL1=APD||Q_INITIAL3=Crew/Pax",
+              "disabled_by": null
+            },
+            {
+              "id": "SUB_ITIN_BOE",
+              "label": "BORDER OVERFLIGHT EXEMPTION",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=Border Overflight Exemption",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_USABOE",
+              "label": "If the client is arriving into the US from South America do they have a Border Overflight Exemption (BOE)?",
+              "type": "radio",
+              "options": [
+                "Client not arriving from South America",
+                "No - Client Advised - NLT loaded",
+                "No - UWA to arrange",
+                "Yes - Client has a valid BOE"
+              ],
+              "enabled_by": "D_HAS_USA=Yes",
+              "disabled_by": "Q_INITIAL1=Border Overflight Exemption"
+            },
+            {
+              "id": "SUB_ITIN_DECAL",
+              "label": "CUSTOMS DECAL",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=Border Overflight Exemption",
+              "disabled_by": null
+            },
+            {
+              "id": "SUB_ITIN_TSAWAIVER",
+              "label": "TSA WAIVER",
+              "type": "subsection",
+              "enabled_by": "Q_INITIAL1=Border Overflight Exemption",
+              "disabled_by": null
+            },
+          ]
+        },
+        {
+          "id": "S_MANIFESTTAB",
+          "title": "MANIFEST TAB",
+          "enabled_by": "Q_ACTION=New Trip||Q_INITIAL1=APD||Q_INITIAL3=Crew/Pax",
+          "disabled_by": null,
+          "questions": [
+            {
+              "id": "SUB_ITIN_CREW",
+              "label": "CREW",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_CREWINFO",
+              "label": "Is any Crew information missing?",
+              "type": "radio",
+              "options": [ "Yes - NLT Loaded", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_CREWPOSITION",
+              "label": "Have the correct positions been assigned to each crew member? PIC, SIC, F/A etc",
+              "type": "radio",
+              "options": [ "Yes", "No - NLT Loaded" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_CREWPASSPORT",
+              "label": "Have the correct passport been loaded for each crew member and each leg",
+              "type": "radio",
+              "options": [ "Yes - NLT Loaded", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            },
+            {
+              "id": "SUB_ITIN_PAX",
+              "label": "PASSENGERS",
+              "type": "subsection",
+              "enabled_by": null,
+              "disabled_by": null
+            },
+            {
+              "id": "Q_PAXMMANIFEST1",
+              "label": "Is any Passenger information missing?",
+              "type": "radio",
+              "options": [ "Yes - NLT Loaded", "No" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
               "id": "Q_MANIFEST2",
               "label": "Has the client specified passports to be used in their request?",
               "type": "radio",
-              "options": [ "Yes - In trip request", "No - Client has preferred passports", "No - Task Loaded" ],
+              "options": [ "Yes - In trip request", "No - Client has preferred passports", "No - NLT loaded" ],
               "enabled_by": null,
               "disabled_by": null
             },
@@ -726,15 +995,15 @@ sections: [
               "id": "Q_MANIFEST5",
               "label": "Have the client specified passports been loaded to the trip and any new documents loaded in a Task DM-RDB?",
               "type": "multi",
-              "options": [ "Existing Passports - Checked and loaded", "New Passports - DM-RDB Task Loaded" ],
+              "options": [ "Existing Passports - Checked and loaded", "New Passports - DM-RDB NLT loaded" ],
               "enabled_by": "Q_MANIFEST2=Yes - In trip request",
-              "disabled_by": "Q_MANIFEST2=No - Client has preferred passports||No - Task Loaded"
+              "disabled_by": "Q_MANIFEST2=No - Client has preferred passports||No - NLT loaded"
             },
             {
               "id": "Q_MANIFEST3",
               "label": "Do passports selected for trip match the client specified or preferred passports?",
               "type": "radio",
-              "options": [ "Yes", "No - Task Loaded" ],
+              "options": [ "Yes", "No - NLT loaded" ],
               "enabled_by": "Q_MANIFEST2=No - Client has preferred passports",
               "disabled_by": null
             },
@@ -749,160 +1018,97 @@ sections: [
           ]
         },
         {
-          "id": "S_HOTELS",
-          "title": "HOTELS",
-          "enabled_by": "Q_INITIAL1=Hotels",
+          "id": "S_INFORMATIONTAB",
+          "title": "Information Tab",
+          "enabled_by": null,
           "disabled_by": null,
           "questions": [
             {
-              "id": "Q_HOTEL1",
-              "label": "Has the client requested UWA arrange Hotels?",
+              "id": "Q_INFORMATION1",
+              "label": "Have the correct Primary Contacts been loaded?",
               "type": "radio",
-              "options": [ "No - Client Own Booking", "Yes", "Unknown - Task Loaded", "Hotels Not Required"],
-              "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=Hotels",
-            },
-            {
-              "id": "Q_HOTEL4",
-              "label": "Has a hotel inquiry been loaded?",
-              "type": "radio",
-              "options": [ "Yes", "No - Client specified hotel", "No - Client Task Loaded"],
-              "enabled_by": "Q_HOTEL1=Yes||Q_INITIAL1=Hotels",
+              "options": [ "Yes", "No - Missing information - NLT loaded"],
+              "tooltip": "Ensure to include all contacts who would require be included in elements like APIS transmissions and Trip Briefs",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_HOTEL6",
-              "label": "Has the client advised a hotel choice?",
+              "id": "Q_INFORMATIONEMAIL",
+              "label": "Have the correct Primary Contacts emails been loaded?",
               "type": "radio",
-              "options": [ "Yes", "No - Client Task Loaded"],
-              "enabled_by": "Q_HOTEL4=Yes",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_HOTEL7",
-              "label": "Has the client choice been booked?",
-              "type": "radio",
-              "options": [ "Yes - Confirmation sent to client", "No - Hotel not available - Client Advised"],
-              "enabled_by": "Q_HOTEL6=Yes||Q_HOTEL4=No - Client specified hotel",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_HOTEL5",
-              "label": "Does CAPPS suggest an early checkin/late checkout?",
-              "type": "radio",
-              "options": [ "Yes - Client Advised", "Yes - Requested (on client instruction)", "Not Suggested" ],
-              "enabled_by": "Q_HOTEL1=Yes",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_HOTEL2",
-              "label": "Has the client been advised of the cancellation policy if a short notice booking?",
-              "type": "radio",
-              "options": [ "Yes", "No - Client Own Booking", "Not Required" ],
-              "enabled_by": "Q_HOTEL1=Yes",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_HOTEL3",
-              "label": "Have Hotels been loaded as OWN to the trip?",
-              "type": "radio",
-              "options": [ "Yes", "No - Task Loaded" ],
-              "enabled_by": "Q_HOTEL1=No - Client Own Booking",
+              "options": [ "Yes", "No - Missing information - NLT loaded"],
+              "tooltip": "On initial trip load flip to Communications Tab to enter emails",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
 
           ]
         },
         {
-          "id": "S_USA",
-          "title": "US SPECIFICS",
-          "enabled_by": "Q_INITIAL2=USA||Q_INITIAL1=RSP",
+          "id": "S_COMMUNICATIONSTAB",
+          "title": "COMMUNICATIONS TAB",
+          "enabled_by": null,
           "disabled_by": null,
           "questions": [
-            {
-              "id": "Q_USA1",
-              "label": "Is the client arriving into an AOE?",
-              "type": "radio",
-              "options": [
-                "AOE",
-                "AOE - On Request - Task Loaded",
-                "No - Task Loaded",
-              ],
-              "enabled_by": null,
-              "disabled_by": null
-            },
-            {
-              "id": "Q_USA2",
-              "label": "Is the client arriving CBP published hours?",
-              "type": "radio",
-              "options": [
-                "Yes",
-                "No - Client is arriving outside CBP hours, RSP Requested",
-                "No - Client is arriving outside CBP hours, RSP Not available"
-              ],
-              "enabled_by": null,
-              "disabled_by": null
-            },
-            {
-              "id": "Q_USA3",
-              "label": "If the client is arriving into the US from South America do they have a Border Overflight Exemption (BOE)?",
-              "type": "radio",
-              "options": [
-                "Client not arriving from South America",
-                "No - Client Advised - Task Loaded",
-                "No - UWA to arrange",
-                "Yes - Client has a valid BOE"
-              ],
-              "enabled_by": null,
-              "disabled_by": null
-            },
+
           ]
         },
         {
-          "id": "S_GAPIS",
-          "title": "GLOBAL APIS",
-          "enabled_by": "Q_INITIAL1=Customs",
-          "disabled_by": "Q_INITIAL1=APD",
+          "id": "S_DELIVERIESTAB",
+          "title": "DELIVERIES TAB",
+          "enabled_by": null,
+          "disabled_by": null,
           "questions": [
             {
-              "id": "Q_GAPIS3",
-              "label": "Is UWA transmitting the eAPIS?",
+              "id": "Q_DELIVERYNLT",
+              "label": "Has the Delivery NLT date/time been set according to client preference?",
               "type": "radio",
-              "options": [ "Yes", "No", "Not Advised - Task Loaded" ],
-              "enabled_by": "Q_INITIAL2=USA||Q_INITIAL1=RSP",
+              "tooltip": "Delivery NLT dictates the time the delivery will be sent to the client (see dashboard for preferences)",
+              "options": [ "Yes", "No - Trip Action NLT loaded with reason", ],
+              "enabled_by": "Q_INITIAL1=Flight Plans",
               "disabled_by": null
             },
             {
-              "id": "Q_GAPIS4",
-              "label": "Has eAPIS been checked for missing information?",
+              "id": "Q_DELIVERYNLTTEXT",
+              "label": "Has the Delivery NLT been updated to advise what merges are require? (Gendecs, Fuel Releases, Short Handling)",
               "type": "radio",
-              "options": [ "eAPIS ready for transmission", "Missing Information - Task Loaded", "Missing Info - Clearance Location", "Missing Info - Customs Decal (UWA arranging)" ],
-              "enabled_by": "Q_GAPIS3=Yes",
+              "options": [ "Yes", "No - Trip Action NLT loaded with reason", ],
+              "enabled_by": "Q_INITIAL1=Flight Plans",
               "disabled_by": null
             },
             {
-              "id": "Q_GAPIS5",
-              "label": "Has the client provided a copy of the eAPIS transmission?",
+              "id": "Q_DELIVERYCREWEMAIL",
+              "label": "Have Crew emails correctly pulled through into the delivery recipients?",
               "type": "radio",
-              "options": [ "Yes", "No - Task Loaded" ],
-              "enabled_by": "Q_GAPIS3=No",
+              "tooltip": "If crew has a PRIM1 email listed in their profile it should pull through automatically",
+              "options": [ "Yes", "No - Delivery to EOC to QC", ],
+              "enabled_by": "Q_INITIAL1=Flight Plans",
               "disabled_by": null
             },
             {
-              "id": "Q_GAPIS1",
-              "label": "Does Global APIS indicate a required API/APIS transmission (non US eAPIS)?",
+              "id": "Q_DELIVERYADDITIONAL",
+              "label": "Has any client requested additional addresses been added?",
               "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": null,
-              "disabled_by": "Q_INITIAL1=APD||Q_INITIAL1=RSP"
+              "options": [ "Yes", "No - No client provided additional addresses", ],
+              "enabled_by": "Q_DELIVERYCREWEMAIL=Yes",
+              "disabled_by": "Q_DELIVERYCREWEMAIL=No - Delivery to EOC to QC",
             },
             {
-              "id": "Q_GAPIS2",
-              "label": "Is UWA transmitting the required API/APIS?",
+              "id": "Q_DELIVERYEOC",
+              "label": "Has eoc@wfscorp.com and eoc@univ-wea.com been loaded in additional addresses?",
               "type": "radio",
-              "options": [ "Yes", "No", "Not Advised - Task Loaded" ],
-              "enabled_by": "Q_GAPIS1=Yes",
-              "disabled_by": null
+              "options": [ "Yes"],
+              "enabled_by": "Q_DELIVERYCREWEMAIL=No - Delivery to EOC to QC",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_DELIVERYREMOVE",
+              "label": "Have all deliveries been removed?",
+              "type": "radio",
+              "options": [ "Yes", "No - Reason provided in the NLT", ],
+              "tooltip": "INITIAL QUESTIONS indicates no Flight Planning",
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": "Q_INITIAL1=Flight Plans",
             },
           ]
         },
@@ -916,7 +1122,7 @@ sections: [
               "id": "Q_3AMGA7",
               "label": "What flight type is this?",
               "type": "radio",
-              "options": [ "IG", "IX / Head", "A Mix", "Unknown - Task Loaded" ],
+              "options": [ "IG", "IX / Head", "A Mix", "Unknown - NLT loaded" ],
               "enabled_by": "Q_REG=3AMGA",
               "disabled_by": null
             },
@@ -924,19 +1130,18 @@ sections: [
               "id": "Q_FPWX2",
               "label": "Are all flight planning specifications loaded?",
               "type": "radio",
-              "options": [ "Yes", "Missing Information - Task Loaded" ],
-              "enabled_by": null,
+              "options": [ "Yes", "Missing Information - NLT loaded" ],
+              "enabled_by": "Q_INITIAL1=",
               "disabled_by": null
             },
             {
               "id": "Q_FPWX3",
-              "label": "Indicate where loaded alternates have come from?",
+              "label": "Have any client provided or preferred alternates been loaded?",
               "type": "radio",
               "options": [
                 "Client Provided",
                 "Client Preference (Dashboard or Customer Profile)",
-                "UVCH",
-                "NONE"
+                "No preferences and none provided"
               ],
               "enabled_by": null,
               "disabled_by": null
@@ -963,11 +1168,10 @@ sections: [
             },
             {
               "id": "Q_N115JS2",
-              "label": "How have the payload figures been calculated?",
+              "label": "Has the client preferred passenger weight been loaded and the total payload checked?",
               "type": "radio",
               "options": [
-                "Payload - Non Standard (261lbs per pax)",
-                "Payload - Non Automated"
+                "261lbs per pax",
               ],
               "enabled_by": "Q_REG=N115JS",
               "disabled_by": null
@@ -1024,8 +1228,8 @@ sections: [
         },
         {
           "id": "S_DELIVERIES",
-          "title": "DELIVERIES",
-          "enabled_by": null,
+          "title": "DELIVERIES TAB",
+          "enabled_by": "Q_ACTION=Flight Plans",
           "disabled_by": null,
           "questions": [
             {
@@ -1040,7 +1244,7 @@ sections: [
               "id": "Q_DELIVTIMEDATE2",
               "label": "Have Merges been re run with the new date/time?",
               "type": "radio",
-              "options": [ "Yes", "No - Changed leg greater than 24hrs away - Task Loaded" ],
+              "options": [ "Yes", "No - Changed leg greater than 24hrs away - NLT loaded" ],
               "enabled_by": "Q_INITIAL3=Date/Time;Q_DELIVTIMEDATE=Yes - New Delivery loaded||Q_INITIAL3=Date/Time;Q_DELIVTIMEDATE=No",
               "disabled_by": null,
             },
@@ -1048,7 +1252,7 @@ sections: [
               "id": "Q_DELIVCREWPAX1",
               "label": "Have Merges been re run with the new manifest?",
               "type": "radio",
-              "options": [ "Yes", "No - Changed leg greater than 24hrs away - Task Loaded" ],
+              "options": [ "Yes", "No - Changed leg greater than 24hrs away - NLT loaded" ],
               "enabled_by": "Q_INITIAL3=Crew/Pax;Q_DELIVTIMEDATE=Yes - New Delivery loaded||Q_INITIAL3=Crew/Pax;Q_DELIVTIMEDATE=No",
               "disabled_by": null,
             },
@@ -1064,7 +1268,7 @@ sections: [
               "id": "Q_DELIVERIES2",
               "label": "Have Deliveries been loaded to each leg or to the first leg of a multi-leg day?",
               "type": "radio",
-              "options": [ "Yes", "No - Task Loaded" ],
+              "options": [ "Yes", "No - NLT loaded" ],
               "enabled_by": "Q_INITIAL1=Flight Plans",
               "disabled_by": null,
             },         
@@ -1072,7 +1276,7 @@ sections: [
               "id": "Q_DELIVERIES6",
               "label": "Who specified the delivery recipients for this trip?",
               "type": "radio",
-              "options": [ "Client in request", "Client Preferences", "Unknown - Task Loaded" ],
+              "options": [ "Client in request", "Client Preferences", "Unknown - NLT loaded" ],
               "enabled_by": "Q_INITAL1=Flight Plans||Q_DELIVTIMEDATE=Yes - New Delivery loaded",
               "disabled_by": "Q_REG=N372ET||Q_REG=3AMGA||Q_REG=MATEX||Q_REG=N115JS",
             },            
@@ -1144,7 +1348,7 @@ sections: [
               "id": "Q_N115JS6",
               "label": "Have Summary Deliveries been loaded (24hrs) for all international legs?",
               "type": "radio",
-              "options": [ "Yes", "No - Internal EU legs", "No - Task Loaded" ],
+              "options": [ "Yes", "No - Internal EU legs", "No - NLT loaded" ],
               "enabled_by": "Q_REG=N115JS",
               "disabled_by": null
             },
@@ -1183,22 +1387,6 @@ sections: [
           ]
         },
         {
-          "id": "S_FUEL",
-          "title": "FUEL",
-          "enabled_by": "Q_ACTION=New Trip||Q_ACTION=Trip Update;Q_INITIAL3=Date/Time",
-          "disabled_by": null,
-          "questions": [
-            {
-              "id": "Q_FUELMATEX",
-              "label": "Confirm Fuel has been set to DO NOT CONTACT?",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_REG=MATEX",
-              "disabled_by": null,
-            },
-          ]
-        },
-        {
           "id": "S_TRANSPORT",
           "title": "TRANSPORT",
           "enabled_by": null,
@@ -1212,70 +1400,7 @@ sections: [
               "enabled_by": "Q_INITIAL3=Date/Time",
               "disabled_by": null,
             },
-            {
-              "id": "Q_TRANSPORT0",
-              "label": "Has any client requested transport been requested?",
-              "type": "radio",
-              "options": [ "Yes", "No transport requested" ],
-              "enabled_by": "Q_INITIAL5=Full Trip",
-              "disabled_by": null,
-            },            
-            {
-              "id": "Q_TRANSPORT1",
-              "label": "Who has Crew Transport been requested with?",
-              "type": "radio",
-              "options": [ "Handler", "Drivania" ],
-              "enabled_by": "Q_TRANSPORT0=Yes||Q_INITIAL1=Transport",
-              "disabled_by": "Q_REG=N372ET",
-            },
-            {
-              "id": "Q_TRANSPORT3",
-              "label": "Who has Crew Transport been requested with?",
-              "type": "radio",
-              "options": [ "GGT", "Drivania"],
-              "enabled_by": "Q_TRANSPORT0=Yes;Q_REG=N372ET",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT4",
-              "label": "Has the client been advised we are unable to provide transport through GGT and a quote been requested from Drivania?",
-              "type": "multi",
-              "options": [ "Client Advised", "Drivania Quote Requested", "Drivania quote sent to client for approval"],
-              "enabled_by": "Q_TRANSPORT3=Drivania",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT5",
-              "label": "Has the email to GGT been sent to the RMP and a task created?",
-              "type": "multi",
-              "options": [ "Email sent to RMP", "Transportation - GGT - ICAO task created", "Task follow up set for 48hrs prior to pick up"],
-              "enabled_by": "Q_TRANSPORT3=GGT",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_3AMGA13",
-              "label": "Who has Crew Transport been aranged with?",
-              "type": "radio",
-              "options": [ "Handler", "Own", "Drivania (Other options unavailable)" ],
-              "enabled_by": "Q_3AMGA10=Crew Transport (if required)",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT2",
-              "label": "Has a quote for transport been sent to the client?",
-              "type": "radio",
-              "options": [ "Handler", "Drivania", "Own" ],
-              "enabled_by": "Q_REG=N700ME;Q_INITIAL1=Transport",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_TRANSPORT6",
-              "label": "Has a cancellation policy been advised to the client if booking is within 24hrs?",
-              "type": "radio",
-              "options": [ "Handler", "Drivania", "Own" ],
-              "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL1=Transport",
-              "disabled_by": "Q_TRANSPORT1=No Transport Required",
-            },
+
           ]
         },
         {
@@ -1287,155 +1412,76 @@ sections: [
         },
         {
           "id": "S_TASKFINAL",
-          "title": "TASKS",
+          "title": "NLT CHECK",
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
             {
-              "id": "Q_BILLINGPFT",
-              "label": "Have you pre-loaded a 'Billing - PFT' Task?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_INITIAL5=Full Trip||Q_INITIAL5=Services Only Trip",
-              "disabled_by": "Q_INITIAL1=Customs Decal||Q_INITIAL1=Border Overflight Exemption||Q_INITIAL1=TSA Waiver",
-            },
-            {
-              "id": "Q_TASKFINAL1",
-              "label": "Task to chase for PIC Name (FRONT PAGES)",
+              "id": "Q_NLT1",
+              "label": "Have any irrelevant NLTs been completed?",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_BASIC6=Not known - Task loaded",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_TASKFINAL2",
-              "label": "Task to chase for Trip FAR Type (FRONT PAGES)",
+              "id": "Q_NLTPRIMCONTACT",
+              "label": "Chase client for missing Primary Contact Info",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_BASIC11=Not advised - Task Loaded",
-              "disabled_by": null,
+              "enabled_by": "Q_INFORMATION1=No - Missing information - NLT loaded||Q_INFORMATIONEMAIL=No - Missing information - NLT loaded",
+              "disabled_by": null
             },
             {
-              "id": "Q_TASKFINAL3",
-              "label": "Task to chase for Outstanding Schedule (Missing schedule or No EOT selected)",
+              "id": "Q_NLTSCHEDULEINFO",
+              "label": "Chase client for missing Schedule information",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_BASIC12=No - Task Loaded",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_TASKFINAL5",
-              "label": "Task to chase for crew/pax manifest (Missing Information selected)",
+              "id": "Q_NLTMANIFESTINFO",
+              "label": "Chase client for missing Crew and/or Pax information",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_MANIFEST1=Crew - Task Loaded||Q_MANIFEST1=Passengers - Task Loaded||Q_MANIFEST1=Both - Task Loaded",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_TASKFINAL4",
-              "label": "Task to chase for Flight Planning Specs (Missing FP specs selected)",
+              "id": "Q_NLTSLOTID",
+              "label": "Chase client for missing Slot IDs",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_FPWX2=Missing Information - Task Loaded",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_TASKFINAL6",
-              "label": "Task to chase for documents (Missing Documents selected)",
+              "id": "Q_NLTPPRNUMBER",
+              "label": "Chase client for missing PPR Number",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_PERMITS8=No - Missing Documents - Task Loaded",
+              "enabled_by": "Q_PPROWNID=No client provided PPR number - NLT loaded",
               "disabled_by": null
             },
             {
-              "id": "Q_CAMOSA4",
-              "label": "Has a Task been loaded to generate passport flip gendecs for any legs to/from Nigeria",
+              "id": "Q_NLTPERMITS",
+              "label": "Chase client for missing Permit IDs",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_REG=MTENG",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
-              "id": "Q_3AMGA11",
-              "label": "Task to chase for slot IDs (Client Arranging slots selected)",
+              "id": "Q_NLTROUTEBUILD",
+              "label": "Have any NEED ROUTE BUILD been completed?",
               "type": "radio",
+              "tooltip": "Answers indicate no required permits - ensure RTE STRING entry in FP SPECS",
               "options": [ "Yes" ],
-              "enabled_by": "Q_SLOTS1=No||Q_SLOTS1=Yes - Some",
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
-            },
-            {
-              "id": "Q_3AMGA12",
-              "label": "Task to chase for PPR numbers (Client Arranging PPR selected)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_PPR1=No||Q_PPR1=Yes - Some",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKDRIVER",
-              "label": "Task to chase for driver details (name, registration, contact number)",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_TRANSPORT1=Handler",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKMERGES",
-              "label": "Task to generate and attach merges 24hrs prior to delivery date/time",
-              "type": "radio",
-              "options": [ "Yes" ],
-              "enabled_by": "Q_INITIAL5=Full Trip||Q_DELIVTIMEDATE2=No - Changed leg greater than 24hrs away - Task Loaded",
-              "disabled_by": "Q_INITIAL1=Customs Decal||Q_INITIAL1=Border Overflight Exemption||Q_INITIAL1=TSA Waiver",
-            },
-            {
-              "id": "Q_TASKDECAL",
-              "label": "Has a Customs Decal Task been loaded with the below information",
-              "type": "multi",
-              "options": [ "Decal Year", "Aircraft Registration(s)", "Aircraft Manufacturer/Type", "Year of Manufacture", "Email for Receipt" ],
-              "enabled_by": "Q_INITIAL1=Customs Decal",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKBOE",
-              "label": "Has a BOE Task been loaded with the below information",
-              "type": "multi",
-              "options": [ "New Request/Renewal", "Operator Name", "Private/Charter/Both", "Email for Receipt" ],
-              "enabled_by": "Q_INITIAL1=Border Overflight Exemption",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASKTSAW",
-              "label": "Has a TSA Waiver Task been loaded with the below information",
-              "type": "multi",
-              "options": [ "New Request/Renewal/Modification", "Client email with application", "Email for Receipt" ],
-              "enabled_by": "Q_INITIAL1=TSA Waiver",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TASK700HA",
-              "label": "Task been loaded to provide client with Daily Briefs starting 1week prior to departure",
-              "type": "radio",
-              "options": [ "Yes",],
-              "enabled_by": "Q_REG=N700HA",
-              "disabled_by": null
-            },
+            }
 
-          ]
-        },
-        {
-          "id": "S_TWU",
-          "title": "TWU",
-          "enabled_by": null,
-          "disabled_by": null,
-          "questions": [
-            {
-              "id": "Q_TWU1",
-              "label": "Have you signed off the TWU removed unnecessary Tasks and completed COMPASS",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_ACTION=New Trip||Q_ACTION=Trip Update||Q_INITIAL5=Services Only Trip",
-              "disabled_by": null,
-            },
           ]
         },
 
