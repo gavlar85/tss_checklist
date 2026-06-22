@@ -20,7 +20,7 @@ disabled_by: null
 id: "Q_ACTION",
 label: "Action",
 type: "select",
-options: ["New Trip", "**WIP** Trip Update **WIP**","Flight Plan QC"],
+options: ["New Trip","Flight Plan QC"],
 enabled_by: null,
 disabled_by: null
 },
@@ -139,15 +139,13 @@ sections: [
             },
             {
               "id": "Q_OPERATIONALTYPE",
-              "label": "Has the Operational Type been correctly loaded?",
+              "label": "Have you checked the Operational Type has been correctly loaded?",
               "type": "radio",
               "options": [ "Private Non-Revenue", "Commercial Non-Scheduled" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": 
               //TITAN
-              "Q_REG=GOATW||Q_REG=GXATW" +
-              //ASCEND
-              "||Q_REG=GMULR||Q_REG=GWEAH",
+              "Q_REG=GOATW||Q_REG=GXATW",
             },
             {
               "id": "Q_OPERATIONALTYPECOMMERCIAL",
