@@ -201,15 +201,7 @@ sections: [
             },
             {
               "id": "Q_TRIPSITE",
-              "label": "Has the site been loaded correctly?",
-              "type": "radio",
-              "options": [ "Yes", "No - Supporting Services/Supervisor Advised" ],
-              "enabled_by": "Q_ACTION=New Trip",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_TRIPOPERATOR",
-              "label": "Has the operator been loaded correctly?",
+              "label": "Has 'SERVICES' been loaded as the site?",
               "type": "radio",
               "options": [ "Yes", "No - Supporting Services/Supervisor Advised" ],
               "enabled_by": "Q_ACTION=New Trip",
@@ -284,6 +276,14 @@ sections: [
               "type": "radio",
               "options": [ "Yes - Client provided full schedule", "Yes - Client provided departure times (Falcon calculated flight times)", "Yes - Client didnt provide information (Assumed timings and Falcon calculated flight times)" ],
               "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_LOCALZULU",
+              "label": "Did the client provide UTC/Zulu times or Local times?",
+              "type": "radio",
+              "options": [ "UTC/Zulu", "Local" ],
+              "enabled_by": "Q_DATESANDTIMES=Yes - Client provided full schedule||Yes - Client provided departure times (Falcon calculated flight times)",
               "disabled_by": null,
             },
             {
