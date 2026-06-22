@@ -208,52 +208,12 @@ sections: [
               "disabled_by": null
             },
             {
-              "id": "Q_ASCEND1",
-              "label": "Has the 'SYG' flight number/call sign been loaded?",
-              "type": "radio",
-              "options": [ "Yes", "No - Callsign differs across legs", "No - NLT loaded" ],
-              "enabled_by": "Q_REG=GWEAH||Q_REG=GHODL||Q_REG=GULIT||Q_REG=GNOLA||Q_REG=GCRUX",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_AVIONCO1",
-              "label": "Has callsign/flight number RJR934 been loaded?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_REG=N934JM",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_AVIONCO2",
-              "label": "Has callsign/flight number RJR85 been loaded?",
-              "type": "radio",
-              "options": [ "Yes", "No" ],
-              "enabled_by": "Q_ACTION=New Trip;Q_REG=N885AQ",
-              "disabled_by": null
-            },
-            {
               "id": "Q_3AMGA5",
               "label": "If all legs are operating to/from/internal USA, has the flight number/call sign been loaded as W3AMGA?",
               "type": "radio",
               "options": [ "Yes", "No - Legs in trip that are not to/from/internal USA" ],
               "enabled_by": "Q_REG=3AMGA; Q_INITIAL2=USA",
               "disabled_by": null
-            },
-            {
-              "id": "Q_BASIC17",
-              "label": "For locations where we are arranging handling, have you sent a Feasibility Guide from uvGO to client?",
-              "type": "radio",
-              "options": [ "Yes", "No - NLT loaded"],
-              "enabled_by": "Q_INITIAL5=Full Trip",
-              "disabled_by": "Q_REG=MATEX",
-            },
-            {
-              "id": "Q_ONBOARDED",
-              "label": "Does the client show as On-Boarded?",
-              "type": "radio",
-              "options": [ "Yes",  "No - Supporting Services/Supervisor Advised" ],
-              "enabled_by": "Q_ACTION=New Trip",
-              "disabled_by": null,
             }
           ]
         },
@@ -284,6 +244,14 @@ sections: [
               "type": "radio",
               "options": [ "UTC/Zulu", "Local" ],
               "enabled_by": "Q_DATESANDTIMES=Yes - Client provided full schedule||Yes - Client provided departure times (Falcon calculated flight times)",
+              "disabled_by": null,
+            },
+            {
+              "id": "Q_TIMEROUNDING",
+              "label": "Have all times been rounded to the nearest 5min interval?",
+              "type": "radio",
+              "options": [ "Yes", "No - NLT Loaded" ],
+              "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
             {
@@ -790,7 +758,8 @@ sections: [
               "id": "Q_PERMITTOFLY",
               "label": "Is the aircraft being operated on a Permit To Fly?",
               "type": "radio",
-              "options": [ "Yes - Loaded to Trip", "No - NLT loaded" ],
+              "options": [ "Yes - Info loaded to trip", "No" ],
+              "tooltip": "INITIAL QUESTIONS indicates no Flight Planning",
               "enabled_by": "Q_INITIAL1=Permits",
               "disabled_by": null,
             }, 
