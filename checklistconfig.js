@@ -1389,6 +1389,7 @@ sections: [
               "type": "radio",
               "options": [ "Yes" ],
               "enabled_by": "Q_ACTION=New Trip",
+              "tooltip": "On-boarding NLTs can be removed",
               "disabled_by": null
             },
             {
