@@ -40,12 +40,29 @@ sections: [
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
+
             {
               "id": "Q_COMS1",
-              "label": "Haves you responded to the client email through Front?",
+              "label": "Have you replied to the client through Front?",
               "type": "radio",
               "options": [ "Yes", "No" ],
-              "enabled_by": "Q_COMMS=Email||Q_COMMS=Whatsapp",
+              "enabled_by": "Q_COMMS=Email",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_WHATSAPP1",
+              "label": "Have you screenshotted the WhatsApp conversation and sent to EOC inbox?",
+              "type": "radio",
+              "options": [ "Yes", "No" ],
+              "enabled_by": "Q_COMMS=Whatsapp",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_WHATSAPP2",
+              "label": "Have you added the email to Trip Messages in Falcon ensuring you include the image attachments?",
+              "type": "radio",
+              "options": [ "Yes", "No" ],
+              "enabled_by": "Q_COMMS=Whatsapp",
               "disabled_by": null
             },
             {
@@ -61,7 +78,7 @@ sections: [
               "label": "Has the message been archived within Front?",
               "type": "radio",
               "options": [ "Yes", "No" ],
-              "enabled_by": "Q_COMMS=Email",
+              "enabled_by": "Q_COMMS=Email||Q_COMMS=Whatsapp",
               "disabled_by": null
             },
           ]
