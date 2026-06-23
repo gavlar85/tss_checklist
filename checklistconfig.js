@@ -447,7 +447,7 @@ sections: [
               "id": "Q_PERMITLANDINGOWN",
               "label": "Have landing permits been loaded and changed to OWN status?",
               "type": "radio",
-              "options": [ "Yes"],
+              "options": [ "Yes", "No - NLT Loaded"],
               "tooltip": "INITAL QUESTIONS indicated no Permits",
               "enabled_by": "Q_PERMITLANDINGFIQ=Yes",
               "disabled_by": "Q_INITIAL1=Permits;Q_PERMITLANDINGFIQ=Yes",
@@ -1479,7 +1479,7 @@ sections: [
               "label": "Chase client for missing Permit IDs",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_ACTION=New Trip",
+              "enabled_by": "Q_PERMITLANDINGOWN=No - NLT Loaded",
               "disabled_by": null
             },
             {
