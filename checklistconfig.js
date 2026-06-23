@@ -527,7 +527,7 @@ sections: [
               "label": "Has an email been sent to the service provider with full details on destination, vehicle type, number of pax?",
               "type": "radio",
               "options": [ "Yes", "No - Information missing - NLT Loaded" ],
-              "enabled_by": "Q_TRANSPORT1=Handler",
+              "enabled_by": "Q_TRANSPORT1=Third Party",
               "disabled_by": null
             },
             {
@@ -535,7 +535,7 @@ sections: [
               "label": "Has the email been loaded to the Transport Service in Falcon?",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_TRANSPORT1=Handler",
+              "enabled_by": "Q_TRANSPORT1=Third Party",
               "disabled_by": null
             },
             {
@@ -812,9 +812,9 @@ sections: [
             {
               "id": "Q_PERMITS5",
               "label": "Is UWA obtaining all overflight permits?",
-              "type": "multi",
+              "type": "radio",
               "options": ["All", "Some"],
-              "enabled_by": "Q_OVFPERMITS1=Yes",
+              "enabled_by": "Q_OVFPERMITS1=Yes;Q_INITIAL1=Permits",
               "disabled_by": null,
             },
             {
