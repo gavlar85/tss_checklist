@@ -523,6 +523,22 @@ sections: [
               "disabled_by": null
             },
             {
+              "id": "Q_TRANSPORTTHIRDPARTYTRANSEMAIL",
+              "label": "Has an email been sent to the service provider with full details on destination, vehicle type, number of pax?",
+              "type": "radio",
+              "options": [ "Yes", "No - Information missing - NLT Loaded" ],
+              "enabled_by": "Q_TRANSPORT1=Handler",
+              "disabled_by": null
+            },
+            {
+              "id": "Q_TRANSPORTTHIRDPARTYTRANSFALCON",
+              "label": "Has the email been loaded to the Transport Service in Falcon?",
+              "type": "radio",
+              "options": [ "Yes" ],
+              "enabled_by": "Q_TRANSPORT1=Handler",
+              "disabled_by": null
+            },
+            {
               "id": "Q_TRANSPORTHANDLERSERVICE",
               "label": "Has an NLT been loaded to chase the handler for driver information if not recieved?",
               "type": "radio",
