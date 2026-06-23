@@ -257,7 +257,7 @@ sections: [
               "id": "Q_TIMEROUNDING",
               "label": "Have all times been rounded to the nearest 5min interval?",
               "type": "radio",
-              "options": [ "Yes", "No - NLT Loaded" ],
+              "options": [ "Yes", "No - Client preference not to adjust times" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
@@ -1430,7 +1430,7 @@ sections: [
               "label": "Chase client for missing Schedule information",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_ACTION=New Trip",
+              "enabled_by": "Q_DATESANDTIMESNLT=Yes||Q_TENTATIVE=Yes",
               "disabled_by": null
             },
             {
