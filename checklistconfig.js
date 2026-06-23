@@ -153,23 +153,15 @@ sections: [
               "type": "radio",
               "options": ["Commercial Scheduled", "Commercial Non-Scheduled", "Private Non-Revenue" ],
               "tooltip": "Registration indicates a client who is a known commercial operator",
-              "enabled_by": "Q_REG=GOATW||Q_REG=GXATW||Q_REG=GMULR||Q_REG=GWEAH",
+              "enabled_by": "Q_REG=GOATW||Q_REG=GXATW",
               "disabled_by": null,
             },
             {
               "id": "Q_OPERATORNAME",
               "label": "Is the Operator name loaded correctly?",
-              "type": "radio",
+              "type": "text",
               "options": [ "Yes", "No" ],
               "enabled_by": "Q_ACTION=New Trip",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_N372ET",
-              "label": "Is the Operator name loaded correctly?",
-              "type": "radio",
-              "options": [ "Cloudfare", "East Dakota Ventures" ],
-              "enabled_by": "Q_REG=N372ET",
               "disabled_by": null
             },
             {
