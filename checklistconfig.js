@@ -1164,13 +1164,23 @@ sections: [
               "disabled_by": null
             },
             {
+              "id": "Q_FPWX10",
+              "label": "Has RNR been entered in the Route ID text box?",
+              "type": "radio",
+              "options": [
+                "Yes",
+              ],
+              "enabled_by": "Q_PERMITLANDINGFIQ=No - Not Required;Q_OVFPERMITS1=No",
+              "disabled_by": null,
+            },
+            {
               "id": "Q_FPWX8",
               "label": "How have the payload figures been calculated?",
               "type": "radio",
               "options": [
-                "Payload - Standard",
-                "Payload - Non Standard",
-                "Payload - Non Automated"
+                "200lbs per pax",
+                "Custom weight per pax",
+                "Fixed and total payload correct"
               ],
               "enabled_by": null,
               "disabled_by": "Q_REG=N115JS",
@@ -1484,7 +1494,7 @@ sections: [
             },
             {
               "id": "Q_NLTROUTEBUILD",
-              "label": "Have any NEED ROUTE BUILD been completed?",
+              "label": "Have any unnecessary NEED ROUTE BUILD NLTs been completed?",
               "type": "radio",
               "tooltip": "Answers indicate no required permits - ensure RTE STRING entry in FP SPECS",
               "options": [ "Yes" ],
