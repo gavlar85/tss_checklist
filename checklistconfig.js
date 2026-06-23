@@ -1413,7 +1413,7 @@ sections: [
               "label": "Chase client for missing Slot IDs",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_ACTION=New Trip",
+              "enabled_by": "Q_SLOTSOWNID=No - Client hasnt provided slot IDs - Client Call NLT loaded",
               "disabled_by": null
             },
             {
