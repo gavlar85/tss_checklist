@@ -1213,10 +1213,10 @@ sections: [
             },
             {
               "id": "Q_3AMGA8",
-              "label": "Has 'Add to field 18 STS/HEAD' been loaded to flight planning comments?",
-              "type": "multi",
-              "options": [ "Yes"],
-              "enabled_by": "Q_3AMGA7=IX / Head||Q_3AMGA7=A Mix",
+              "label": "Has 'Add to field 18 STS/HEAD' been loaded to flight planning comments for relevant legs?",
+              "type": "radio",
+              "options": [ "Yes", "No - NLT Loaded"],
+              "enabled_by": "Q_OPERATIONALTYPE=Special Operation Head Flight",
               "disabled_by": null
             },
             {
