@@ -1500,7 +1500,7 @@ sections: [
               "options": [ "Yes" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
-            }
+            },
             {
               "id": "Q_NLTROUTEBUILDNEEDED",
               "label": "Ensure any required Route Build NLTs have been set for an appropriate time/date to for permit applications?",
