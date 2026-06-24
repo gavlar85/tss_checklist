@@ -422,7 +422,7 @@ sections: [
               "id": "Q_PERMITLANDINGFIQ",
               "label": "Does FIQ indicate landing permits are required?",
               "type": "radio",
-              "options": [ "Yes", "No - Not required", "No FIQ route available - Route Build Required" ],
+              "options": [ "Yes", "No", "No FIQ route available - Route Build Required" ],
               "enabled_by": null,
               "disabled_by": null,
             },
@@ -1154,7 +1154,7 @@ sections: [
               "options": [
                 "Yes",
               ],
-              "enabled_by": "Q_PERMITLANDINGFIQ=No - Not Required;Q_OVFPERMITS1=No",
+              "enabled_by": "Q_PERMITLANDINGFIQ=No;Q_OVFPERMITS1=No",
               "disabled_by": null,
             },
             {
