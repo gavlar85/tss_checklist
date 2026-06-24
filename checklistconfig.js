@@ -431,7 +431,7 @@ sections: [
               "id": "Q_PERMITLANDINGFIQ",
               "label": "Does FIQ indicate landing permits are required?",
               "type": "radio",
-              "options": [ "Yes", "No - Not required" ],
+              "options": [ "Yes", "No - Not required", "No FIQ route available - Route Build Required" ],
               "enabled_by": null,
               "disabled_by": null,
             },
@@ -805,7 +805,7 @@ sections: [
               "id": "Q_OVFPERMITS1",
               "label": "Does FIQ indicate that overflight permits are required?",
               "type": "radio",
-              "options": [ "Yes", "No"],
+              "options": [ "Yes", "No", "No FIQ route available - Route Build Required"],
               "enabled_by": null,
               "disabled_by": null,
             },
@@ -1486,15 +1486,24 @@ sections: [
             },
             {
               "id": "Q_NLTPERMITS",
-              "label": "Chase client for missing Permit IDs",
+              "label": "Chase client for missing Permit numbers",
               "type": "radio",
               "options": [ "Yes" ],
-              "enabled_by": "Q_PERMITLANDINGOWN=No - NLT Loaded",
+              "enabled_by": "Q_PERMITLANDINGOWN=No - NLT Loaded||Q_OVFPERMITSOWN=No - NLT Loaded",
               "disabled_by": null
             },
             {
               "id": "Q_NLTROUTEBUILD",
               "label": "Have any unnecessary NEED ROUTE BUILD NLTs been completed?",
+              "type": "radio",
+              "tooltip": "Answers indicate no required permits - ensure RTE STRING entry in FP SPECS",
+              "options": [ "Yes" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null
+            }
+            {
+              "id": "Q_NLTROUTEBUILDNEEDED",
+              "label": "Ensure any required Route Build NLTs have been set for an appropriate time/date to for permit applications?",
               "type": "radio",
               "tooltip": "Answers indicate no required permits - ensure RTE STRING entry in FP SPECS",
               "options": [ "Yes" ],
