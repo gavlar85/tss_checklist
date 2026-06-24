@@ -158,20 +158,11 @@ sections: [
               "id": "Q_OPERATIONALTYPE",
               "label": "Have you checked the Operational Type has been correctly loaded?",
               "type": "radio",
-              "options": [ "Private Non-Revenue", "Commercial Non-Scheduled" ],
+              "options": [ "Private Non-Revenue", "Private Special Airworthiness", "Commercial Non-Scheduled", "Charter Humanitarian", "Charter (X) Air Ambulance", "Special Operation Head Flight" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": 
               //TITAN
               "Q_REG=GOATW||Q_REG=GXATW",
-            },
-            {
-              "id": "Q_OPERATIONALTYPECOMMERCIAL",
-              "label": "Has the Operational Type been correctly loaded?",
-              "type": "radio",
-              "options": ["Commercial Scheduled", "Commercial Non-Scheduled", "Private Non-Revenue" ],
-              "tooltip": "Registration indicates a client who is a known commercial operator",
-              "enabled_by": "Q_REG=GOATW||Q_REG=GXATW",
-              "disabled_by": null,
             },
             {
               "id": "Q_OPERATORNAME",
@@ -239,9 +230,9 @@ sections: [
           "questions": [
             {
               "id": "Q_DATESANDTIMES",
-              "label": "Are dates and times populated in all locations?",
+              "label": "How have dates and timings been populated?",
               "type": "radio",
-              "options": [ "Yes - Client provided full schedule", "Yes - Client provided departure times (Falcon calculated flight times)", "Yes - Client didnt provide information (Assumed timings and Falcon calculated flight times)" ],
+              "options": [ "Client provided full schedule", "Client provided departure times only (Falcon calculated flight times)", "No details provided (Assumed timings and Falcon calculated flight times)", "No details provided (TBA dates/times, no flight times" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
@@ -574,9 +565,9 @@ sections: [
             },
             {
               "id": "Q_FUELREQ",
-              "label": "Has Fuel service been loaded in all locations requested by client?",
+              "label": "Has Fuel service been loaded in all locations advised by client?",
               "type": "radio",
-              "options": ["Yes", "No - Fuel not available in all locations requested - NLT Loaded"],
+              "options": ["Yes", "No - Fuel not available in all locations requested - NLT Loaded", "Client has not advised - NLT Loaded"],
               "enabled_by": "Q_INITIAL1=Fuel",
               "disabled_by": null
             },
@@ -957,7 +948,7 @@ sections: [
               "id": "Q_CREWPASSPORT",
               "label": "Have the correct passport been loaded for each crew member and each leg",
               "type": "radio",
-              "options": [ "Yes - NLT Loaded", "No" ],
+              "options": [ "Yes", "No - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
@@ -1150,7 +1141,7 @@ sections: [
               "options": [
                 "Client Provided",
                 "Client Preference (Dashboard or Customer Profile)",
-                "No preferences and none provided"
+                "No client preference and none provided in request"
               ],
               "enabled_by": null,
               "disabled_by": null
@@ -1180,7 +1171,8 @@ sections: [
               "options": [
                 "200lbs per pax",
                 "Custom weight per pax",
-                "Fixed and total payload correct"
+                "Fixed and total payload correct",
+                "Not advised - NLT Loaded"
               ],
               "enabled_by": null,
               "disabled_by": "Q_REG=N115JS",
