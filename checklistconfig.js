@@ -232,7 +232,7 @@ sections: [
               "id": "Q_DATESANDTIMES",
               "label": "How have dates and timings been populated?",
               "type": "radio",
-              "options": [ "Client provided full schedule", "Client provided departure times only (Falcon calculated flight times)", "No details provided (Assumed timings and Falcon calculated flight times)", "No details provided (TBA dates/times, no flight times" ],
+              "options": [ "Client provided full schedule", "Client provided departure times only (Falcon calculated flight times)", "No details provided (Assumed timings and Falcon calculated flight times)", "No details provided (TBA dates/times, no flight times)" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
@@ -770,11 +770,20 @@ sections: [
             },
             {
               "id": "Q_PERMITTOFLY",
-              "label": "Is the aircraft being operated on a Permit To Fly?",
+              "label": "Have the Special Airworthiness Documents been added to the trip (Permit to Fly etc)?",
               "type": "radio",
               "options": [ "Yes - Info loaded to trip", "No" ],
               "tooltip": "INITIAL QUESTIONS indicates no Flight Planning",
               "enabled_by": "Q_INITIAL1=Permits",
+              "disabled_by": null,
+            }, 
+            {
+              "id": "Q_PERMITTOFLY2",
+              "label": "Has it been expressly highlighted to vendors that the flight is not operating with usually expected documents (COA, ARC etc)?",
+              "type": "radio",
+              "options": [ "Yes - Info loaded to trip", "No" ],
+              "tooltip": "INITIAL QUESTIONS indicates no Flight Planning",
+              "enabled_by": "Q_OPERATIONALTYPE=Private Special Airworthiness",
               "disabled_by": null,
             }, 
             {
@@ -783,15 +792,7 @@ sections: [
               "type": "subsection",
               "enabled_by": null,
               "disabled_by": null
-            },
-            {
-              "id": "Q_PERMITSDATETIME",
-              "label": "Have all permits been checked for validity and where required a revision sent?",
-              "type": "multi",
-              "options": [ "Overflight Permits", "Landing Permits"],
-              "enabled_by": "Q_INITIAL3=Date/Time",
-              "disabled_by": "Q_INITIAL1=APD",
-            },            
+            },          
             {
               "id": "Q_OVFPERMITS1",
               "label": "Does FIQ indicate that overflight permits are required?",
@@ -824,14 +825,6 @@ sections: [
               "options": ["Yes", "No - NLT Loaded"],
               "enabled_by": "Q_PERMITS5=Some",
               "disabled_by": null,
-            },
-            {
-              "id": "Q_WWS12",
-              "label": "Is the Bolivia block permit loaded in CAPPS valid and current (Check Excel File for City Pair/Routing?",
-              "type": "multi",
-              "options": [ "Yes - Checked and Valid", "No - Amendment to Block Permit requested", "N/A - Flight doesn't overfly Bolivia" ],
-              "enabled_by": "Q_REG=P4WWS",
-              "disabled_by": "Q_INITIAL1=APD"
             },
             {
               "id": "Q_PERMITS8",
