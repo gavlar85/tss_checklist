@@ -1,179 +1,537 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Flight Planning Comment Builder</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dassault Helper</title>
   <style>
-    :root { color-scheme: light dark; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 16px; }
-    .wrap { max-width: 720px; margin: 0 auto; }
-    h1 { font-size: 18px; margin: 0 0 12px; }
-    .grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 8px; align-items: center; }
-    .hdr { font-weight: 600; opacity: .85; }
-    label { font-size: 13px; opacity: .9; }
-    input[type="number"] { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid rgba(127,127,127,.35); border-radius: 8px; }
-    .row { padding: 10px 0; border-bottom: 1px solid rgba(127,127,127,.2); }
-    .tot { font-weight: 700; }
-    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(127,127,127,.15); font-size: 13px; }
-    textarea { width: 100%; min-height: 160px; padding: 10px; border-radius: 10px; border: 1px solid rgba(127,127,127,.35); box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    button { padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(127,127,127,.35); background: rgba(127,127,127,.12); cursor: pointer; }
-    button:hover { filter: brightness(1.05); }
-    .note { font-size: 12px; opacity: .8; margin-top: 8px; }
-    .footer { display:flex; justify-content: space-between; align-items:center; gap: 12px; margin-top: 10px; }
+    :root {
+      --bg: #07111f;
+      --panel: #0d1b2f;
+      --panel-2: #122641;
+      --input-bg: #081525;
+      --output-bg: #050d18;
+      --text: #e8f1ff;
+      --heading: #ffffff;
+      --muted: #93a8c4;
+      --accent: #38bdf8;
+      --accent-2: #f59e0b;
+      --border: rgba(148, 163, 184, 0.25);
+      --success: #22c55e;
+      --shadow: rgba(0, 0, 0, 0.35);
+      --body-gradient: radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), transparent 34%);
+    }
+
+    body.light-mode {
+      --bg: #eef4fb;
+      --panel: #ffffff;
+      --panel-2: #e8f1fb;
+      --input-bg: #ffffff;
+      --output-bg: #f8fbff;
+      --text: #102033;
+      --heading: #07111f;
+      --muted: #52657d;
+      --accent: #0369a1;
+      --accent-2: #b45309;
+      --border: rgba(15, 23, 42, 0.16);
+      --success: #15803d;
+      --shadow: rgba(15, 23, 42, 0.14);
+      --body-gradient: radial-gradient(circle at top left, rgba(3, 105, 161, 0.12), transparent 34%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--body-gradient), var(--bg);
+      color: var(--text);
+      padding: 28px;
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 22px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .header h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+      letter-spacing: 0.03em;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--panel-2) 86%, transparent), color-mix(in srgb, var(--panel) 94%, transparent));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 42px var(--shadow);
+    }
+
+    .card h2 {
+      margin: 0 0 16px;
+      font-size: 17px;
+      color: var(--heading);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    select,
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.16);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 420px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      background: var(--output-bg);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 16px;
+      line-height: 1.45;
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      color: #06101d;
+      background: var(--accent);
+    }
+
+    button.secondary,
+    .theme-toggle {
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+    }
+
+    .theme-toggle {
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      font-size: 12px;
+    }
+
+    .status {
+      color: var(--success);
+      font-weight: 700;
+      min-height: 20px;
+    }
+
+    .hint {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .standard-weight {
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--panel-2) 72%, transparent);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .standard-weight small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 850px) {
+      body {
+        padding: 16px;
+      }
+    }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <h1>Flight Planning System — Comment Builder</h1>
-
-    <div class="grid hdr" aria-hidden="true" style="margin-bottom:6px;">
-      <div>Category</div>
-      <div>Count</div>
-      <div>Weight (lbs)</div>
-      <div>Line Total (lbs)</div>
-    </div>
-
-    <div class="row grid">
-      <label>Males</label>
-      <input id="mCount" type="number" min="0" step="1" value="4" inputmode="numeric" />
-      <input id="mWgt" type="number" min="0" step="1" value="203" inputmode="numeric" />
-      <div class="pill"><span id="mTotal">0</span> lbs</div>
-    </div>
-
-    <div class="row grid">
-      <label>Females</label>
-      <input id="fCount" type="number" min="0" step="1" value="1" inputmode="numeric" />
-      <input id="fWgt" type="number" min="0" step="1" value="184" inputmode="numeric" />
-      <div class="pill"><span id="fTotal">0</span> lbs</div>
-    </div>
-
-    <div class="row grid">
-      <label>Children</label>
-      <input id="cCount" type="number" min="0" step="1" value="0" inputmode="numeric" />
-      <input id="cWgt" type="number" min="0" step="1" value="106" inputmode="numeric" />
-      <div class="pill"><span id="cTotal">0</span> lbs</div>
-    </div>
-
-    <div class="row grid">
-      <label>Bags (Cargo)</label>
-      <input id="bCount" type="number" min="0" step="1" value="0" inputmode="numeric" />
-      <input id="bWgt" type="number" min="0" step="1" value="29" inputmode="numeric" />
-      <div class="pill"><span id="bTotal">0</span> lbs</div>
-    </div>
-
-    <div class="footer">
-      <div class="tot">Grand Total: <span id="grandTotal">0</span> lbs</div>
-      <div class="pill">CARGO WEIGHT = Bags total</div>
-    </div>
-
-    <div style="margin-top:14px;">
-      <label for="output" class="hdr" style="display:block;margin-bottom:6px;">Generated comment text</label>
-      <textarea id="output" readonly></textarea>
-      <div class="actions">
-        <button id="copyBtn" type="button">Copy to clipboard</button>
-        <button id="resetBtn" type="button">Reset to zeros</button>
+  <main class="app">
+    <header class="header">
+      <div class="header-top">
+        <div>
+          <h1>Dassault Helper</h1>
+          <p>Select crew and payload settings, then copy the generated client instruction block.</p>
+        </div>
+        <button id="themeToggle" type="button" class="theme-toggle">Light Mode</button>
       </div>
-      <div class="note">
-        ADULTS COUNT is always forced to 0. Weights are output as whole numbers with “LBS”.
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Crew Selection</h2>
+
+        <div class="field">
+          <label for="picSelect">PIC</label>
+          <select id="picSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="sicSelect">SIC</label>
+          <select id="sicSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="faSelect">FA</label>
+          <select id="faSelect"></select>
+        </div>
+
+        <h2 style="margin-top: 22px;">W&amp;B / Payload</h2>
+
+        <div class="field">
+          <label for="profileSelect">W&amp;B Profile</label>
+          <select id="profileSelect">
+            <option value="VIP seat 2/1">VIP seat 2/1</option>
+            <option value="VIP seat 2/0">VIP seat 2/0</option>
+          </select>
+        </div>
+
+        <div class="mini-grid">
+          <div class="field">
+            <label for="childrenCount">Children</label>
+            <input id="childrenCount" type="number" value="0" min="0" />
+          </div>
+          <div class="field">
+            <label>Standard Child Weight</label>
+            <div class="standard-weight">77LBS<small>2–14 years</small></div>
+          </div>
+        </div>
+
+        <div class="mini-grid">
+          <div class="field">
+            <label for="malesCount">Males</label>
+            <input id="malesCount" type="number" value="4" min="0" />
+          </div>
+          <div class="field">
+            <label>Standard Male Weight</label>
+            <div class="standard-weight">203LBS</div>
+          </div>
+        </div>
+
+        <div class="mini-grid">
+          <div class="field">
+            <label for="femalesCount">Females</label>
+            <input id="femalesCount" type="number" value="1" min="0" />
+          </div>
+          <div class="field">
+            <label>Standard Female Weight</label>
+            <div class="standard-weight">163LBS</div>
+          </div>
+        </div>
+
+        <div class="mini-grid">
+          <div class="field">
+            <label for="bagCount">Bags</label>
+            <input id="bagCount" type="number" value="0" min="0" />
+          </div>
+          <div class="field">
+            <label>Standard Bag Weight</label>
+            <div class="standard-weight">29LBS</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cargoWeight">Additional Cargo LBS</label>
+          <input id="cargoWeight" type="number" value="0" min="0" />
+        </div>
+
+        <p class="hint">Replace the names in the <strong>crewNames</strong> array inside the script with the list you provide.</p>
       </div>
-    </div>
-  </div>
+
+      <div class="card">
+        <h2>Generated Copy Block</h2>
+        <textarea id="outputBlock" readonly></textarea>
+        <div class="actions">
+          <button id="copyBtn" type="button">Copy Text Block</button>
+          <button id="resetBtn" type="button" class="secondary">Reset Defaults</button>
+          <span id="copyStatus" class="status"></span>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    const els = {
-      mCount: document.getElementById('mCount'),
-      mWgt: document.getElementById('mWgt'),
-      fCount: document.getElementById('fCount'),
-      fWgt: document.getElementById('fWgt'),
-      cCount: document.getElementById('cCount'),
-      cWgt: document.getElementById('cWgt'),
-      bCount: document.getElementById('bCount'),
-      bWgt: document.getElementById('bWgt'),
+    // Replace this list with the names you provide.
+    // The same list is currently used for PIC, SIC and FA dropdowns.
+    // If you want separate PIC/SIC/FA lists, use the optional arrays below instead.
+    const crewNames = [
+      "SELECT NAME",
+      "Damien BRAULT",
+      "Nicolas DESIDE",
+      "Antoine DOUSSAUD",
+      "Dimitri DROBYSZ",
+      "Sébastien DUPONT DE DINECHIN",
+      "Bruno FERRY",
+      "François-Xavier GAROT",
+      "Henri MAHE",
+      "Fabrice VALETTE",
+      "Christophe BOURT",
+      "Jérémy DANTUNG",
+      "Fabrice DOUGNAC",
+      "Cédric CARLE",
+      "Stéphane DUMONT",
+      "Olivier PERRIAUD",
+      "Philippe CANALI",
+      "Olivier FROMENT",
+      "Jean-Pascal LEMESRE",
+      "Brice SEBAN",
+      "Hubert GIRAUD",
+      "Guillaume DELEUZE",
+      "Robin MASSE",
+      "Cyril DABADIE",
+      "Alexis HOURLE"
+    ];
 
-      mTotal: document.getElementById('mTotal'),
-      fTotal: document.getElementById('fTotal'),
-      cTotal: document.getElementById('cTotal'),
-      bTotal: document.getElementById('bTotal'),
-      grandTotal: document.getElementById('grandTotal'),
+    // Optional separate role-specific lists.
+    // Leave as null to use crewNames for all dropdowns.
+    const picNames = null;
+    const sicNames = null;
+    const faNames = null;
 
-      output: document.getElementById('output'),
-      copyBtn: document.getElementById('copyBtn'),
-      resetBtn: document.getElementById('resetBtn'),
+    const STANDARD_WEIGHTS = {
+      male: 203,
+      female: 163,
+      child: 77,
+      bag: 29
     };
 
-    function n(v) {
-      const x = Number(v);
-      return Number.isFinite(x) && x > 0 ? Math.floor(x) : 0;
+    const defaults = {
+      profile: "VIP seat 2/1",
+      males: 4,
+      females: 1,
+      children: 0,
+      bagCount: 0,
+      cargo: 0
+    };
+
+    const els = {
+      pic: document.getElementById("picSelect"),
+      sic: document.getElementById("sicSelect"),
+      fa: document.getElementById("faSelect"),
+      profile: document.getElementById("profileSelect"),
+      males: document.getElementById("malesCount"),
+      females: document.getElementById("femalesCount"),
+      children: document.getElementById("childrenCount"),
+      bagCount: document.getElementById("bagCount"),
+      cargo: document.getElementById("cargoWeight"),
+      output: document.getElementById("outputBlock"),
+      copyBtn: document.getElementById("copyBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      copyStatus: document.getElementById("copyStatus"),
+      themeToggle: document.getElementById("themeToggle")
+    };
+
+    function populateDropdown(selectEl, names) {
+      selectEl.innerHTML = "";
+      names.forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        selectEl.appendChild(option);
+      });
     }
 
-    function lineTotal(countEl, wgtEl) {
-      return n(countEl.value) * n(wgtEl.value);
+    function numberValue(inputEl) {
+      const parsed = Number(inputEl.value);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
     }
 
-    function build() {
-      const mC = n(els.mCount.value), mW = n(els.mWgt.value);
-      const fC = n(els.fCount.value), fW = n(els.fWgt.value);
-      const cC = n(els.cCount.value), cW = n(els.cWgt.value);
-      const bC = n(els.bCount.value), bW = n(els.bWgt.value);
+    function formatLbs(value) {
+      return `${Math.round(value)}LBS`;
+    }
 
-      const mT = mC * mW;
-      const fT = fC * fW;
-      const cT = cC * cW;
-      const bT = bC * bW; // treated as cargo
+    function calculateBagWeight() {
+      return numberValue(els.bagCount) * STANDARD_WEIGHTS.bag;
+    }
 
-      const grand = mT + fT + cT + bT;
+    function calculateTotalCargo() {
+      return calculateBagWeight() + numberValue(els.cargo);
+    }
 
-      els.mTotal.textContent = String(mT);
-      els.fTotal.textContent = String(fT);
-      els.cTotal.textContent = String(cT);
-      els.bTotal.textContent = String(bT);
-      els.grandTotal.textContent = String(grand);
+    function calculatePayloadBreakdown() {
+      const maleTotal = numberValue(els.males) * STANDARD_WEIGHTS.male;
+      const femaleTotal = numberValue(els.females) * STANDARD_WEIGHTS.female;
+      const childTotal = numberValue(els.children) * STANDARD_WEIGHTS.child;
+      const cargoTotal = calculateTotalCargo();
 
-      // Required output format. ADULTS COUNT forced to 0.
-      const text =
-`-SET ADULTS COUNT TO 0.
--SET MALES COUNT TO ${mC}.
--SET MALES WEIGHT TO ${mW}LBS.
--SET FEMALES COUNT TO ${fC}.
--SET FEMALES WEIGHT TO ${fW}LBS.
--SET CHILDREN COUNT TO ${cC}.
--SET CHILDREN WEIGHT TO ${cW}LBS
--SET CARGO WEIGHT TO ${bT}LBS.`;
+      return {
+        maleTotal,
+        femaleTotal,
+        childTotal,
+        cargoTotal,
+        totalPayload: maleTotal + femaleTotal + childTotal + cargoTotal
+      };
+    }
+
+    // Copy-block standard weight lines are intentionally fixed values.
+    // Total payload still uses count × standard weight in calculatePayloadBreakdown().
+    function generateOutput() {
+      const breakdown = calculatePayloadBreakdown();
+
+      const text = [
+        `PIC ${els.pic.value}`,
+        `SIC ${els.sic.value}`,
+        `FA ${els.fa.value}`,
+        ``,
+        `-SET THE W&B PROFILE TO: SELECT ${els.profile.value}.`,
+        `-SET ADULTS COUNT TO 0.`,
+        `-SET MALES COUNT TO ${numberValue(els.males)}.`,
+        `-SET MALES WEIGHT TO 203LBS.`,
+        `-SET FEMALES COUNT TO ${numberValue(els.females)}.`,
+        `-SET FEMALES WEIGHT TO 163LBS.`,
+        `-SET CHILDREN COUNT TO ${numberValue(els.children)}.`,
+        `-SET CHILDREN WEIGHT TO 77LBS.`,
+        `-SET BAG WEIGHT TO ${formatLbs(STANDARD_WEIGHTS.bag)}.`,
+        `-SET CARGO WEIGHT TO ${formatLbs(breakdown.cargoTotal)}.`,
+        `-TOTAL PAYLOAD ${formatLbs(breakdown.totalPayload)} AS PER CLIENT INSTRUCTION.`
+      ].join("\n");
 
       els.output.value = text;
     }
 
-    function wire() {
-      const inputs = [els.mCount, els.mWgt, els.fCount, els.fWgt, els.cCount, els.cWgt, els.bCount, els.bWgt];
-      inputs.forEach(i => i.addEventListener('input', build));
+    async function copyOutput() {
+      try {
+        await navigator.clipboard.writeText(els.output.value);
+        els.copyStatus.textContent = "Copied";
+      } catch (err) {
+        els.output.select();
+        document.execCommand("copy");
+        els.copyStatus.textContent = "Copied";
+      }
 
-      els.copyBtn.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(els.output.value);
-          els.copyBtn.textContent = 'Copied!';
-          setTimeout(() => (els.copyBtn.textContent = 'Copy to clipboard'), 1200);
-        } catch {
-          // Fallback: select text for manual copy
-          els.output.focus();
-          els.output.select();
-          els.copyBtn.textContent = 'Select + Ctrl+C';
-          setTimeout(() => (els.copyBtn.textContent = 'Copy to clipboard'), 1500);
+      window.setTimeout(() => {
+        els.copyStatus.textContent = "";
+      }, 1800);
+    }
+
+    function resetDefaults() {
+      els.profile.value = defaults.profile;
+      els.males.value = defaults.males;
+      els.females.value = defaults.females;
+      els.children.value = defaults.children;
+      els.bagCount.value = defaults.bagCount;
+      els.cargo.value = defaults.cargo;
+      els.pic.selectedIndex = 0;
+      els.sic.selectedIndex = 0;
+      els.fa.selectedIndex = 0;
+      generateOutput();
+    }
+
+    function setTheme(mode) {
+      const isLight = mode === "light";
+      document.body.classList.toggle("light-mode", isLight);
+      els.themeToggle.textContent = isLight ? "Dark Mode" : "Light Mode";
+      localStorage.setItem("dassaultHelperTheme", mode);
+    }
+
+    function toggleTheme() {
+      const nextMode = document.body.classList.contains("light-mode") ? "dark" : "light";
+      setTheme(nextMode);
+    }
+
+    function init() {
+      populateDropdown(els.pic, picNames || crewNames);
+      populateDropdown(els.sic, sicNames || crewNames);
+      populateDropdown(els.fa, faNames || crewNames);
+
+      Object.values(els).forEach((el) => {
+        if (el && ["SELECT", "INPUT"].includes(el.tagName)) {
+          el.addEventListener("input", generateOutput);
+          el.addEventListener("change", generateOutput);
         }
       });
 
-      els.resetBtn.addEventListener('click', () => {
-        [els.mCount, els.mWgt, els.fCount, els.fWgt, els.cCount, els.cWgt, els.bCount, els.bWgt]
-          .forEach(el => el.value = 0);
-        build();
-      });
+      els.copyBtn.addEventListener("click", copyOutput);
+      els.resetBtn.addEventListener("click", resetDefaults);
+      els.themeToggle.addEventListener("click", toggleTheme);
 
-      build();
+      setTheme(localStorage.getItem("dassaultHelperTheme") || "dark");
+
+      resetDefaults();
     }
 
-    wire();
+    init();
   </script>
 </body>
 </html>
