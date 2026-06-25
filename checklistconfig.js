@@ -118,16 +118,8 @@ sections: [
               "id": "Q_INITIAL4",
               "label": "Flight Plan QC for which client?",
               "type": "radio",
-              "options": [ "Dassault", "Wideworld", "CAMOSA" ],
+              "options": [ "Dassault", "Wideworld",],
               "enabled_by": "Q_ACTION=Flight Plan QC",
-              "disabled_by": null,
-            },
-            {
-              "id": "Q_INITIALFPQC",
-              "label": "Is it a Foreflight or Legacy delivery?",
-              "type": "radio",
-              "options": [ "Foreflight", "Legacy" ],
-              "enabled_by": "Q_INITIAL4=Dassault",
               "disabled_by": null,
             },
             {
@@ -135,7 +127,7 @@ sections: [
               "label": "Is the flight being operated to EASA or FAA requirements",
               "type": "radio",
               "options": [ "EASA", "FAA" ],
-              "enabled_by": "Q_INITIALFPQC=Foreflight",
+              "enabled_by": "id": "Q_INITIAL4=Dassault",
               "disabled_by": null,
             },
           ]
