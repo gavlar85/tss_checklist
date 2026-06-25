@@ -127,7 +127,7 @@ sections: [
               "label": "Is the flight being operated to EASA or FAA requirements",
               "type": "radio",
               "options": [ "EASA", "FAA" ],
-              "enabled_by": "id": "Q_INITIAL4=Dassault",
+              "enabled_by": "Q_INITIAL4=Dassault",
               "disabled_by": null,
             },
           ]
