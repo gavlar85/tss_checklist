@@ -1521,8 +1521,8 @@ sections: [
               "label": "Is the Flight Plan named to the correct Captain (front page of trip and ICAO ATC plan)?",
               "type": "radio",
               "options": [ "Yes", ],
-              "enabled_by": "Q_INITIAL4=Dassault",
-              "disabled_by": "Q_INITIALFPQC=Foreflight"
+              "enabled_by": "Q_ACTION=Flight Plan QC;Q_INITIAL4=Dassault",
+              "disabled_by": null,
             },
             {
               "id": "Q_FPQC2",
@@ -1555,7 +1555,7 @@ sections: [
               "type": "radio",
               "options": [ "4O", "A2", ],
               "enabled_by": "Q_ACTION=Flight Plan QC;Q_INITIAL4=Dassault",
-              "disabled_by": "Q_INITIALFPQC=Foreflight",
+              "disabled_by": null,
             },
             {
               "id": "Q_FPQC-F2TH",
