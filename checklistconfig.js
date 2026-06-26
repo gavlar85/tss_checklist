@@ -915,7 +915,7 @@ sections: [
               "id": "Q_CREWINFO",
               "label": "Is any Crew information missing?",
               "type": "radio",
-              "options": [ "Yes - NLT Loaded", "No" ],
+              "options": [ "Manifest - NLT Loaded", "Passports/Documents - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
@@ -925,7 +925,7 @@ sections: [
               "type": "radio",
               "options": [ "Yes", "No - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
-              "disabled_by": null
+              "disabled_by": "Q_ACTION=CREWINFO=Manifest - NLT Loaded"
             },
             {
               "id": "Q_CREWPASSPORT",
@@ -946,56 +946,24 @@ sections: [
               "id": "Q_PAXMMANIFEST1",
               "label": "Is any Passenger information missing?",
               "type": "radio",
-              "options": [ "Yes - NLT Loaded", "No" ],
+              "options": [ "Manifest - NLT Loaded", "Passports/Documents - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
             {
               "id": "Q_MANIFEST2",
-              "label": "Has the client specified passports to be used in their request?",
+              "label": "Have any client specified/prefered passports been loaded?",
               "type": "radio",
-              "options": [ "Yes - In trip request", "No - Client has preferred passports", "No - NLT loaded" ],
+              "options": [ "Yes - Client specified passports", "Yes - Client has preferred passports", "No - Not specified and no preference - NLT loaded" ],
               "enabled_by": null,
               "disabled_by": null
             },
             {
-              "id": "Q_115MANIFEST",
-              "label": "Confirm Hala loaded correctly? In the US (domestic legs only) she uses the name Hala Mnaymneh. Everywhere else, she uses Hala Elhabashi",
-              "type": "multi",
-              "options": [ "Yes - Loaded as Mnaymneh for US domestic legs", "Yes - Loaded as Elhabashi for non US domestic legs", "Hala not on trip" ],
-              "enabled_by": "Q_REG=N115JS;Q_INITIAL2=USA",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_115MANIFEST",
-              "label": "Confirm you have loaded pax Hala correctly as Hala Elhabashi",
-              "type": "radio",
-              "options": [ "Yes - Loaded as Hala Elhabashi", "Hala not on trip" ],
-              "enabled_by": "Q_REG=N115JS",
-              "disabled_by": "Q_INITIAL2=USA",
-            },
-            {
               "id": "Q_MANIFEST5",
-              "label": "Have the client specified passports been loaded to the trip and any new documents loaded in a Task DM-RDB?",
-              "type": "multi",
-              "options": [ "Existing Passports - Checked and loaded", "New Passports - DM-RDB NLT loaded" ],
-              "enabled_by": "Q_MANIFEST2=Yes - In trip request",
-              "disabled_by": "Q_MANIFEST2=No - Client has preferred passports||No - NLT loaded"
-            },
-            {
-              "id": "Q_MANIFEST3",
-              "label": "Do passports selected for trip match the client specified or preferred passports?",
+              "label": "Has the client specified passports different to those already loaded in Falcon?",
               "type": "radio",
-              "options": [ "Yes", "No - NLT loaded" ],
-              "enabled_by": "Q_MANIFEST2=No - Client has preferred passports",
-              "disabled_by": null
-            },
-            {
-              "id": "Q_MANIFEST4",
-              "label": "Have any new people added to CAPPS been MK Verified?",
-              "type": "radio",
-              "options": [ "Yes", "No new people added" ],
-              "enabled_by": "Q_MANIFEST1=No||Q_MANIFEST1=Some Info Provided",
+              "options": [ "Existing Passports - Checked and loaded", "New Passports - OCR system used", "New Passports - Manually loaded to Falcon and Documents sent to Supporting Services" ],
+              "enabled_by": "Q_MANIFEST2=Yes - Client specified passports",
               "disabled_by": null
             },
           ]
