@@ -150,11 +150,9 @@ sections: [
               "id": "Q_OPERATIONALTYPE",
               "label": "Have you checked the Operational Type has been correctly loaded?",
               "type": "radio",
-              "options": [ "Private Non-Revenue", "Private Special Airworthiness", "Commercial Non-Scheduled", "Charter Humanitarian", "Charter (X) Air Ambulance", "Special Operation Head Flight" ],
+              "options": [ "Private Non-Revenue", "Private Special Airworthiness", "Commercial Non-Scheduled", "Charter Charter-135", "Charter Humanitarian", "Charter (X) Air Ambulance", "Special Operation Head Flight" ],
               "enabled_by": "Q_ACTION=New Trip",
-              "disabled_by": 
-              //TITAN
-              "Q_REG=GOATW||Q_REG=GXATW",
+              "disabled_by": null,
             },
             {
               "id": "Q_OPERATORNAME",
