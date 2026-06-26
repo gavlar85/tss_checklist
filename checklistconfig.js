@@ -915,7 +915,7 @@ sections: [
               "id": "Q_CREWINFO",
               "label": "Is any Crew information missing?",
               "type": "radio",
-              "options": [ "Manifest - NLT Loaded", "Passports/Documents - NLT Loaded" ],
+              "options": [ "No", "Manifest - NLT Loaded", "Passports/Documents - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
@@ -925,7 +925,7 @@ sections: [
               "type": "radio",
               "options": [ "Yes", "No - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
-              "disabled_by": "Q_ACTION=CREWINFO=Manifest - NLT Loaded"
+              "disabled_by": "Q_CREWINFO=Manifest - NLT Loaded"
             },
             {
               "id": "Q_CREWPASSPORT",
@@ -933,7 +933,7 @@ sections: [
               "type": "radio",
               "options": [ "Yes", "No - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
-              "disabled_by": null
+              "disabled_by": "Q_CREWINFO=Passports/Documents - NLT Loaded"
             },
             {
               "id": "SUB_ITIN_PAX",
@@ -946,7 +946,7 @@ sections: [
               "id": "Q_PAXMMANIFEST1",
               "label": "Is any Passenger information missing?",
               "type": "radio",
-              "options": [ "Manifest - NLT Loaded", "Passports/Documents - NLT Loaded" ],
+              "options": [ "No", "Manifest - NLT Loaded", "Passports/Documents - NLT Loaded" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null
             },
@@ -956,7 +956,7 @@ sections: [
               "type": "radio",
               "options": [ "Yes - Client specified passports", "Yes - Client has preferred passports", "No - Not specified and no preference - NLT loaded" ],
               "enabled_by": null,
-              "disabled_by": null
+              "disabled_by": "Q_PAXMMANIFEST1=Passports/Documents - NLT Loaded"
             },
             {
               "id": "Q_MANIFEST5",
