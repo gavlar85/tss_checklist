@@ -1514,21 +1514,12 @@ sections: [
           "enabled_by": null,
           "disabled_by": null,
           "questions": [
-
-            {
-              "id": "Q_FPQC4",
-              "label": "Is the CFP format (FMT ID) - 4O (for French crew) or A2 (for US crew)?",
-              "type": "radio",
-              "options": [ "4O", "A2", ],
-              "enabled_by": "Q_ACTION=Flight Plan QC;Q_INITIAL4=Dassault",
-              "disabled_by": null,
-            },
             {
               "id": "Q_FPQC-F2TH",
               "label": "Do the fuel figures match Dassaults' (EASA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 30mins, minimum 700lb", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=4O;Q_FPQC2=F2TH||Q_INITIALFPQC2=EASA;Q_FPQC2=F2TH",
+              "enabled_by": "Q_INITIALFPQC2=EASA;Q_FPQC2=F2TH",
               "disabled_by": null
             },
             {
@@ -1536,7 +1527,7 @@ sections: [
               "label": "Do the fuel figures match Dassaults' (EASA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 30mins, minimum 800lb", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=4O;Q_FPQC2=F900||Q_INITIALFPQC2=EASA;Q_FPQC2=F900",
+              "enabled_by": "Q_INITIALFPQC2=EASA;Q_FPQC2=F900",
               "disabled_by": null
             },
             {
@@ -1544,7 +1535,7 @@ sections: [
               "label": "Do the fuel figures match Dassaults' (EASA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 30mins, minimum 900lb", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=4O;Q_FPQC2=FA7X/FA8X||Q_INITIALFPQC2=EASA;Q_FPQC2=FA7X/FA8X",
+              "enabled_by": "Q_INITIALFPQC2=EASA;Q_FPQC2=FA7X/FA8X",
               "disabled_by": null
             },
             {
@@ -1552,7 +1543,7 @@ sections: [
               "label": "Do the fuel figures match Dassaults' (EASA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 30mins, minimum 1000lb", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=4O;Q_FPQC2=FA6X||Q_INITIALFPQC2=EASA;Q_FPQC2=FA6X",
+              "enabled_by": "Q_INITIALFPQC2=EASA;Q_FPQC2=FA6X",
               "disabled_by": null
             },
             {
@@ -1560,7 +1551,7 @@ sections: [
               "label": "Do the fuel figures match Dassaults' (FAA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 45mins", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=A2;Q_FPQC2=F2TH||Q_INITIALFPQC2=FAA;Q_FPQC2=F2TH",
+              "enabled_by": "Q_INITIALFPQC2=FAA;Q_FPQC2=F2TH",
               "disabled_by": null
             },
             {
@@ -1568,7 +1559,7 @@ sections: [
               "label": "Do the fuel figures match Dassaults' (FAA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 45mins", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=A2;Q_FPQC2=F900||Q_INITIALFPQC2=FAA;Q_FPQC2=F900",
+              "enabled_by": "Q_INITIALFPQC2=FAA;Q_FPQC2=F900",
               "disabled_by": null
             },
             {
@@ -1576,7 +1567,7 @@ sections: [
               "label": "Do the fuel figures match Dassaults' (FAA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 45mins", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=A2;Q_FPQC2=FA7X/FA8X||Q_INITIALFPQC2=FAA;Q_FPQC2=FA7X/FA8X",
+              "enabled_by": "Q_INITIALFPQC2=FAA;Q_FPQC2=FA7X/FA8X",
               "disabled_by": null
             },
             {
@@ -1584,7 +1575,7 @@ sections: [
               "label": "Do the fuel figures match Dassaults' (FAA) requirements?",
               "type": "multi",
               "options": [ "RTE.R - 5% - minimum 200lb", "ALT.R - minimum 600lb", "FIN.RES - 45mins", "TAXI OUT - minimum 200lb", "TTL.FUEL - Matches value requested in trip" ],
-              "enabled_by": "Q_FPQC4=A2;Q_FPQC2=FA6X||Q_INITIALFPQC2=FAA;Q_FPQC2=FA6X",
+              "enabled_by": "Q_INITIALFPQC2=FAA;Q_FPQC2=FA6X",
               "disabled_by": null
             },
             {
