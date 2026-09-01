@@ -303,7 +303,7 @@
         <div class="mini-grid">
           <div class="field">
             <label for="bagCount">Bags</label>
-            <input id="bagCount" type="number" value="0" min="0" />
+            <input id="bagCount" type="number" value="5" min="0" />
           </div>
           <div class="field">
             <label>Standard Bag Weight</label>
@@ -364,10 +364,14 @@
     ];
 
     // Optional separate role-specific lists.
-    // Leave as null to use crewNames for all dropdowns.
+    // PIC and SIC use crewNames. FA uses its own dedicated list.
     const picNames = null;
     const sicNames = null;
-    const faNames = null;
+    const faNames = [
+      "SELECT NAME",
+      "Corinne MOHIMONT",
+      "Marie-France LOUGUET"
+    ];
 
     const STANDARD_WEIGHTS = {
       male: 203,
@@ -381,7 +385,7 @@
       males: 4,
       females: 1,
       children: 0,
-      bagCount: 0,
+      bagCount: 5,
       cargo: 0
     };
 
@@ -415,6 +419,14 @@
     function numberValue(inputEl) {
       const parsed = Number(inputEl.value);
       return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+    }
+
+    function calculateDefaultBagCount() {
+      return numberValue(els.males) + numberValue(els.females);
+    }
+
+    function setDefaultBagCount() {
+      els.bagCount.value = calculateDefaultBagCount();
     }
 
     function formatLbs(value) {
@@ -462,7 +474,6 @@
         `-SET FEMALES WEIGHT TO 163LBS.`,
         `-SET CHILDREN COUNT TO ${numberValue(els.children)}.`,
         `-SET CHILDREN WEIGHT TO 77LBS.`,
-        `-SET BAG WEIGHT TO ${formatLbs(STANDARD_WEIGHTS.bag)}.`,
         `-SET CARGO WEIGHT TO ${formatLbs(breakdown.cargoTotal)}.`,
         `-TOTAL PAYLOAD ${formatLbs(breakdown.totalPayload)} AS PER CLIENT INSTRUCTION.`
       ].join("\n");
@@ -490,7 +501,7 @@
       els.males.value = defaults.males;
       els.females.value = defaults.females;
       els.children.value = defaults.children;
-      els.bagCount.value = defaults.bagCount;
+      setDefaultBagCount();
       els.cargo.value = defaults.cargo;
       els.pic.selectedIndex = 0;
       els.sic.selectedIndex = 0;
@@ -520,6 +531,17 @@
           el.addEventListener("input", generateOutput);
           el.addEventListener("change", generateOutput);
         }
+      });
+
+      [els.males, els.females].forEach((el) => {
+        el.addEventListener("input", () => {
+          setDefaultBagCount();
+          generateOutput();
+        });
+        el.addEventListener("change", () => {
+          setDefaultBagCount();
+          generateOutput();
+        });
       });
 
       els.copyBtn.addEventListener("click", copyOutput);
