@@ -1380,9 +1380,9 @@ sections: [
           "questions": [
             {
               "id": "Q_HBFF",
-              "label": "Enter some question here about the pointless new tab?",
-              "type": "radio",
-              "options": ["Yes", "No - A normal person would have built this into the Information or Communication tab" ],
+              "label": "Have the relevant checkboxes been selected for client contacts?",
+              "type": "multi",
+              "options": ["HBFF", "Pre-trip", "Active-trip" ],
               "enabled_by": "Q_ACTION=New Trip",
               "disabled_by": null,
             },
