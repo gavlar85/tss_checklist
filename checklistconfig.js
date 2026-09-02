@@ -1373,6 +1373,23 @@ sections: [
           "questions": []
         },
         {
+          "id": "S_CONTACT",
+          "title": "CONTACT TAB",
+          "enabled_by": "Q_ACTION=New Trip",
+          "disabled_by": null,
+          "questions": [
+            {
+              "id": "Q_HBFF",
+              "label": "Enter some question here about the pointless new tab?",
+              "type": "radio",
+              "options": ["Yes", "No - A normal person would have built this into the Information or Communication tab" ],
+              "enabled_by": "Q_ACTION=New Trip",
+              "disabled_by": null,
+            },
+
+          ]
+        },
+        {
           "id": "S_TASKFINAL",
           "title": "NLT CHECK",
           "enabled_by": null,
