@@ -755,7 +755,7 @@ sections: [
               "id": "SUB_ITIN_SPECFLIGHTAUTH",
               "label": "SPECIAL FLIGHT AUTHORISATIONS",
               "type": "subsection",
-              "enabled_by": "Q_INITIAL1=Permits",
+              "enabled_by": "Q_OPERATIONALTYPE=Private Special Airworthiness",
               "disabled_by": null
             },
             {
@@ -764,7 +764,7 @@ sections: [
               "type": "radio",
               "options": [ "Yes - Info loaded to trip", "No" ],
               "tooltip": "INITIAL QUESTIONS indicates no Flight Planning",
-              "enabled_by": "Q_INITIAL1=Permits",
+              "enabled_by": "Q_OPERATIONALTYPE=Private Special Airworthiness",
               "disabled_by": null,
             }, 
             {
